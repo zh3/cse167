@@ -7,15 +7,16 @@
 
 #include "SGLSystem.h"
 #include <ctype.h>
+#include <iostream>
 
 using namespace std;
 
 SGLSystem::SGLSystem(const Material &material, const string &startString, 
-            const string &ruleString, double rotateAngle, double newSegmentSize,
-            int maxRecursionDepth) 
+            std::multimap<char, LSystemRule*> *newRules, double rotateAngle, 
+            double newSegmentSize, int maxRecursionDepth) 
         : SGGeode(material), 
           turtle(new SGTurtle(material)),
-          start(startString), rule(ruleString), 
+          start(startString), rules(newRules),
           angle(rotateAngle), segmentSize(newSegmentSize),
           maxDepth(maxRecursionDepth) {
     generateLSystem(start, 0);
@@ -23,6 +24,13 @@ SGLSystem::SGLSystem(const Material &material, const string &startString,
 
 SGLSystem::~SGLSystem() {
     delete turtle;
+    
+    multimap<char, LSystemRule*>::iterator it;
+    for (it = rules->begin(); it != rules->end(); it++) {
+        delete (*it).second;
+    }
+    
+    delete rules;
 }
 
 void SGLSystem::draw(Matrix4 mat) {
@@ -30,15 +38,6 @@ void SGLSystem::draw(Matrix4 mat) {
 }
 
 void SGLSystem::generateLSystem(const string &lsystem, int depth) {
-//    turtle->drawMove(1.0);
-//    
-//    turtle->rotateH(90.0);
-//    turtle->drawMove(1.0);
-//    turtle->rotateL(90.0);
-//    turtle->drawMove(1.0);
-//    turtle->rotateU(90.0);
-//    turtle->drawMove(1.0);
-    
     for (unsigned int i = 0; i < lsystem.size(); i++) {
         char ch = lsystem[i];
         if (isVariable(ch)) {
@@ -98,7 +97,18 @@ void SGLSystem::processVariable(char c) {
 }
 
 string SGLSystem::getRule(char variable) {
-    return rule;
+    pair<multimap<char, LSystemRule*>::iterator, 
+         multimap<char, LSystemRule*>::iterator> ruleRange;
+    
+    ruleRange = rules->equal_range(variable);
+    for (multimap<char, LSystemRule*>::iterator it = ruleRange.first;
+            it != ruleRange.second; it++) {
+        return (*it).second->rule;
+    }
+    
+    cerr << "Error: rule not found" << endl;
+    // Throw exception if rule not found
+    throw(1);
 }
 
 bool SGLSystem::isVariable(char c) {
