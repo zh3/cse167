@@ -18,7 +18,8 @@ SGTurtle::SGTurtle(const Material &material,
           h(newH), l(newL), u(newU), 
           hRotation(0.0), lRotation(0.0), uRotation(0.0),
           up(newUp), origin(newOrigin), 
-          vertices(new vector<Vector3 *>()) {
+          vertices(new vector<Vector3 *>()),
+          states(new stack<TurtleState *>()) {
     normalizeVectors();
 }
 
@@ -26,8 +27,9 @@ SGTurtle::SGTurtle(const Material &material)
         : SGGeode(material),
           h(0.0, 0.0, -1.0), l(-1.0, 0.0, 0.0), u(0.0, 1.0, 0.0), 
           hRotation(0.0), lRotation(0.0), uRotation(0.0),
-          up(0.0, 0.0, 1.0), origin(0.0, 0.0, 0.0),
-          vertices(new vector<Vector3 *>()) {
+          up(0.0, 1.0, 0.0), origin(0.0, 0.0, 0.0),
+          vertices(new vector<Vector3 *>()),
+          states(new stack<TurtleState *>()){
     normalizeVectors();
 }
 
@@ -36,6 +38,12 @@ SGTurtle::~SGTurtle() {
         delete vertices->at(i);
     }
     
+    while (!states->empty()) {
+        delete states->top();
+        states->pop();
+    }
+    
+    delete states;
     delete vertices;
 }
 
@@ -95,6 +103,23 @@ void SGTurtle::rotateU(double angle) {
     Matrix4 turtleBasisRotationMatrix(getTurtleBasisRotationMatrix());
     turtleBasisRotationMatrix.multiply(rotation);
     setBasisRotation(turtleBasisRotationMatrix);
+}
+
+void SGTurtle::pushState() {
+    TurtleState *currentState = new TurtleState(h, l, u, origin);
+    
+    states->push(currentState);
+}
+
+void SGTurtle::popState() {
+    TurtleState *state = states->top();
+    
+    states->pop();
+    h = state->h;
+    l = state->l;
+    u = state->u;
+    
+    origin = state->origin;
 }
 
 void SGTurtle::draw(Matrix4 mat) {

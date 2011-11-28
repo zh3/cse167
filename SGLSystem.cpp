@@ -56,10 +56,28 @@ void SGLSystem::generateLSystem(const string &lsystem, int depth) {
 void SGLSystem::processConstant(char c) {
     switch (c) {
         case '+':
-            turtle->rotateH(angle);
+            turtle->rotateU(angle);
             break;
         case '-':
+            turtle->rotateU(-angle);
+            break;
+        case '&':
+            turtle->rotateL(angle);
+            break;
+        case '^':
+            turtle->rotateL(-angle);
+            break;
+        case '\\':
+            turtle->rotateH(angle);
+            break;
+        case '/':
             turtle->rotateH(-angle);
+            break;
+        case '[':
+            turtle->pushState();
+            break;
+        case ']':
+            turtle->popState();
             break;
         default:
             break;

@@ -13,7 +13,9 @@
 #include "Matrix4.h"
 #include "Vector4.h"
 #include "SGGeode.h"
+#include "TurtleState.h"
 #include <vector>
+#include <stack>
 
 class SGTurtle : public SGGeode {
 public:
@@ -30,6 +32,9 @@ public:
     void rotateL(double angle);
     void rotateU(double angle);
     
+    void pushState();
+    void popState();
+    
     void draw(Matrix4 mat);
 private:
     Vector3 h;
@@ -43,6 +48,7 @@ private:
     Vector3 origin;
     
     std::vector<Vector3 *> *vertices;
+    std::stack<TurtleState *> *states;
     
     void normalizeVectors();
     Matrix4 getTurtleMatrix();
