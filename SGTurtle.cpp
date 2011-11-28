@@ -27,7 +27,7 @@ SGTurtle::SGTurtle(const Material &material)
         : SGGeode(material),
           h(0.0, 0.0, -1.0), l(-1.0, 0.0, 0.0), u(0.0, 1.0, 0.0), 
           hRotation(0.0), lRotation(0.0), uRotation(0.0),
-          up(0.0, 1.0, 0.0), origin(0.0, 0.0, 0.0),
+          up(1.0, 0.0, 0.0), origin(0.0, 0.0, 0.0),
           vertices(new vector<Vector3 *>()),
           states(new stack<TurtleState *>()){
     normalizeVectors();

@@ -67,11 +67,20 @@ void SGLSystem::processConstant(char c) {
         case '^':
             turtle->rotateL(-angle);
             break;
+        case '<':
+            turtle->rotateH(angle);
+            break;
+        case '>':
+            turtle->rotateH(-angle);
+            break;
         case '\\':
             turtle->rotateH(angle);
             break;
         case '/':
             turtle->rotateH(-angle);
+            break;
+        case '|':
+            turtle->rotateU(180.0);
             break;
         case '[':
             turtle->pushState();
