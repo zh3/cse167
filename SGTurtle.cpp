@@ -106,7 +106,7 @@ void SGTurtle::draw(Matrix4 mat) {
     
     glBegin(GL_LINES);
     for (unsigned int i = 0; i < vertices->size(); i++) {
-        cout << "vertex " << i << " is " << *vertices->at(i) << endl;
+        //cout << "vertex " << i << " is " << *vertices->at(i) << endl;
         glVertex(vertices->at(i));
     }
     glEnd();
