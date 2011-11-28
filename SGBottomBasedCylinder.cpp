@@ -32,7 +32,7 @@ void SGBottomBasedCylinder::draw(Matrix4 mat) {
     //glLoadMatrixd(mat.getPointer());
     glMultMatrixd(mat.getPointer());
     
-    glRotatef(-90.0, 1.0, 0.0, 0.0);
+    //glRotatef(-90.0, 1.0, 0.0, 0.0);
     drawCylinder();
     glPopMatrix();
 }
@@ -53,9 +53,9 @@ void SGBottomBasedCylinder::generateCylinder(double radius, double height) {
         x2 = radius * cos(t + segmentAngle);
         y2 = radius * sin(t + segmentAngle);
         
-        Vector3 *v0 = new Vector3(0.0, 0.0, height);
-        Vector3 *v1 = new Vector3(x1, y1, height);
-        Vector3 *v2 = new Vector3(x2, y2, height);
+        Vector3 *v0 = new Vector3(0.0, 0.0, 0.0);
+        Vector3 *v1 = new Vector3(x1, y1, 0.0);
+        Vector3 *v2 = new Vector3(x2, y2, 0.0);
         triangleVertices->push_back(v0);
         triangleVertices->push_back(v1);
         triangleVertices->push_back(v2);
@@ -72,9 +72,9 @@ void SGBottomBasedCylinder::generateCylinder(double radius, double height) {
         triangleNormals->push_back(upperTriangleNormal2);
         triangleNormals->push_back(upperTriangleNormal3);
         
-        v0 = new Vector3(0.0, 0.0, 0.0);
-        v1 = new Vector3(x2, y2, 0.0);
-        v2 = new Vector3(x1, y1, 0.0);
+        v0 = new Vector3(0.0, 0.0, -height);
+        v1 = new Vector3(x2, y2, -height);
+        v2 = new Vector3(x1, y1, -height);
         triangleVertices->push_back(v0);
         triangleVertices->push_back(v1);
         triangleVertices->push_back(v2);
@@ -91,10 +91,10 @@ void SGBottomBasedCylinder::generateCylinder(double radius, double height) {
         triangleNormals->push_back(upperTriangleNormal2);
         triangleNormals->push_back(upperTriangleNormal3);
         
-        Vector3 *q0 = new Vector3(x1, y1, height);
-        Vector3 *q1 = new Vector3(x1, y1, 0.0);
-        Vector3 *q2 = new Vector3(x2, y2, 0.0);
-        Vector3 *q3 = new Vector3(x2, y2, height);
+        Vector3 *q0 = new Vector3(x1, y1, 0.0);
+        Vector3 *q1 = new Vector3(x1, y1, -height);
+        Vector3 *q2 = new Vector3(x2, y2, -height);
+        Vector3 *q3 = new Vector3(x2, y2, 0.0);
         
         Vector3 q1q0(*q0 - *q1);
         Vector3 q1q2(*q2 - *q1);
