@@ -13,12 +13,14 @@
 using namespace std;
 
 SGLSystem::SGLSystem(const Material &material, const string &startString, 
-            std::multimap<char, LSystemRule*> *newRules, double rotateAngle, 
-            double newSegmentSize, int maxRecursionDepth) 
+            std::multimap<char, LSystemRule*> *newRules, 
+            std::map<char, TurtleAction*> *newVariableActions,
+            double rotateAngle, int maxRecursionDepth) 
         : SGGeode(material), 
           turtle(new SGTurtle(material)),
-          start(startString), rules(newRules),
-          angle(rotateAngle), segmentSize(newSegmentSize),
+          start(startString), rules(newRules), 
+          variableActions(newVariableActions),
+          angle(rotateAngle),
           maxDepth(maxRecursionDepth) {
     generateLSystem(start, 0);
 }
@@ -94,7 +96,14 @@ void SGLSystem::processConstant(char c) {
 }
 
 void SGLSystem::processVariable(char c) {
-    turtle->drawMove(segmentSize);
+    map<char, TurtleAction*>::iterator var = variableActions->find(c);
+    
+    if (var != variableActions->end()) {
+        var->second->doAction(turtle);
+    } else {
+        cerr << "No action mapping found for variable " << c << endl;
+        throw (1);
+    }
 }
 
 string SGLSystem::getRule(char variable) {

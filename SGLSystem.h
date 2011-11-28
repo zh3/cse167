@@ -11,15 +11,16 @@
 #include "SGGeode.h"
 #include "SGTurtle.h"
 #include "LSystemRule.h"
+#include "TurtleAction.h"
 #include <string>
 #include <map>
 
 class SGLSystem : public SGGeode {
 public:
     SGLSystem(const Material &material, const std::string &startString, 
-            std::multimap<char, LSystemRule*> *newRules, double rotateAngle, 
-            double newSegmentSize,
-            int maxRecursionDepth);
+            std::multimap<char, LSystemRule*> *newRules,
+            std::map<char, TurtleAction*> *newVariableActions,
+            double rotateAngle, int maxRecursionDepth);
     virtual ~SGLSystem();
     
     void draw(Matrix4 mat);
@@ -27,9 +28,9 @@ private:
     SGTurtle *turtle;
     std::string start;
     std::multimap<char, LSystemRule*> *rules;
+    std::map<char, TurtleAction*> *variableActions;
     
     double angle;
-    double segmentSize;
     int maxDepth;
     
     void generateLSystem(const std::string &lSystem, int depth);
