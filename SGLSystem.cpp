@@ -8,6 +8,7 @@
 #include "SGLSystem.h"
 #include <ctype.h>
 #include <iostream>
+#include "BasicMath.h"
 
 using namespace std;
 
@@ -99,11 +100,18 @@ void SGLSystem::processVariable(char c) {
 string SGLSystem::getRule(char variable) {
     pair<multimap<char, LSystemRule*>::iterator, 
          multimap<char, LSystemRule*>::iterator> ruleRange;
+    int random = rand() % 100 + 1;
     
     ruleRange = rules->equal_range(variable);
+    
+    double cumulativeProbability = 0.0;
     for (multimap<char, LSystemRule*>::iterator it = ruleRange.first;
             it != ruleRange.second; it++) {
-        return (*it).second->rule;
+        LSystemRule *lSystemRule = (*it).second;
+        cumulativeProbability += lSystemRule->probability;
+        
+        if (random <= (int) ceil(cumulativeProbability * 100))
+                return lSystemRule->rule;
     }
     
     cerr << "Error: rule not found" << endl;
