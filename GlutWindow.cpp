@@ -115,7 +115,7 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     if (glutGet(GLUT_WINDOW_COLORMAP_SIZE) != 0)
     {
        cerr << "Fatal Error: bad RGBA colormap size\n" << endl;
-       exit(1);
+     //  exit(1);
     }
 
     glEnable(GL_DEPTH_TEST);            	      // enable depth buffering
@@ -129,7 +129,7 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     glLoadIdentity();
     // Colors
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
-    glEnable ( GL_COLOR_MATERIAL );
+    //glEnable ( GL_COLOR_MATERIAL );
 
     GLfloat pointlight_ambient[] = {0.1, 0.1, 0.1, 1.0};
     GLfloat pointlight_diffuse[] = {1.0, 1.0, 1.0, 1.0};

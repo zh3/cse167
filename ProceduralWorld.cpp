@@ -9,6 +9,7 @@
 #include "SGCylinder.h"
 #include "Material.h"
 #include "SGRobot.h"
+#include "SGCity.h"
 
 using namespace std;
 
@@ -49,6 +50,8 @@ SGNode *getTiledRobot(Material &limbMaterial, Material &bodyMaterial,
     tileBot->addChild(tileTransform);
     tileBot->addChild(tileRobot);
     
+    SGCity *city = new SGCity(limbMaterial, 100, 100);
+    tileBot->addChild(city);
     return tileBot;
 }
 
