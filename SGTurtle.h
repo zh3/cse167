@@ -41,6 +41,7 @@ public:
     
     void draw(Matrix4 mat);
 private:
+    static const double EPSILON = 0.0001;
     Vector3 h;
     Vector3 l;
     Vector3 u;
@@ -53,11 +54,11 @@ private:
     
     std::vector<Vector3 *> *vertices;
     std::stack<TurtleState *> *states;
-    //std::vector<SGGeode *> *geometry;
+    std::vector<SGNode *> *geometry;
     
     std::vector<LSystemMaterialBinding*> *materialBindings;
     
-    int bindingsPtr;
+    unsigned int bindingsPtr;
     
     void normalizeVectors();
     Matrix4 getTurtleMatrix();
@@ -65,6 +66,7 @@ private:
     void setBasis(const Matrix4 &turtleMatrix);
     void setBasisRotation(const Matrix4 &turtleMatrix);
     LSystemMaterialBinding *getNextMaterialBinding();
+    SGNode *getCylinderBetweenPoints(Vector3 end, Vector3 start);
 };
 
 #endif	/* SGTURTLE_H */

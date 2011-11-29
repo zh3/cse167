@@ -6,6 +6,9 @@
  */
 
 #include "SGTurtle.h"
+#include "SGMatrixTransform.h"
+#include "SGCylinder.h"
+#include "SGBottomBasedCylinder.h"
 #include <GL/glut.h>
 #include <iostream>
 
@@ -21,7 +24,7 @@ SGTurtle::SGTurtle(const Material &material,
           up(newUp), origin(newOrigin), 
           vertices(new vector<Vector3 *>()),
           states(new stack<TurtleState *>()),
-          //geometry(new vector<SGGeode *>()),
+          geometry(new vector<SGNode *>()),
           materialBindings(newMaterialBindings) {
     normalizeVectors();
 }
@@ -34,6 +37,7 @@ SGTurtle::SGTurtle(const Material &material,
           up(1.0, 0.0, 0.0), origin(0.0, 0.0, 0.0),
           vertices(new vector<Vector3 *>()),
           states(new stack<TurtleState *>()),
+          geometry(new vector<SGNode *>()),
           materialBindings(newMaterialBindings),
           bindingsPtr(0) {
     normalizeVectors();
@@ -77,10 +81,39 @@ void SGTurtle::drawMove(double distance) {
     Vector3 *start = new Vector3(turtleMatrix.multiply(turtleOrigin));
     Vector3 *end = new Vector3(turtleMatrix.multiply(turtleEndpoint));
     
+    geometry->push_back(getCylinderBetweenPoints(*end, *start));
+    
     vertices->push_back(start);
     vertices->push_back(end);
     
     origin = turtleMatrix.multiply(turtleEndpoint);
+}
+
+SGNode *SGTurtle::getCylinderBetweenPoints(Vector3 end, Vector3 start) {
+    Vector3 cylinderDefaultDirection(0.0, 0.0, -1.0);
+    Vector3 p(end - start);
+    Vector3 rotationAxis;
+    rotationAxis.cross(cylinderDefaultDirection, p);
+    
+    double angle = (180.0 / BasicMath::PI) 
+        * acos(cylinderDefaultDirection.dot(p) / p.magnitude());
+    
+    Matrix4 rotation;
+    if (fabs(angle) > EPSILON) {
+        rotation.toRotationMatrix(angle, rotationAxis);
+    } else {
+        rotation.toIdentity();
+    }
+    
+    Matrix4 translation;
+    translation.toTranslationMatrix(start.x, start.y, start.z);
+    translation.multiply(rotation);
+    SGMatrixTransform *cylinderTransform = new SGMatrixTransform(translation);
+    SGBottomBasedCylinder *cylinder = new SGBottomBasedCylinder(material, 
+            p.magnitude() / 10.0, p.magnitude());
+    cylinderTransform->addChild(cylinder);
+    
+    return cylinderTransform;
 }
     
 void SGTurtle::rotateH(double angle) {
@@ -143,20 +176,26 @@ void SGTurtle::draw(Matrix4 mat) {
     glPushMatrix();
     glMultMatrixd(mat.getPointer());
     
-    glBegin(GL_LINES);
-    double percentageVerticesDrawn;
+    
+    double percentageCylindersDrawn;
     LSystemMaterialBinding *nextMaterial = getNextMaterialBinding();
 
-    for (unsigned int i = 0; i < vertices->size(); i++) {
-        percentageVerticesDrawn = (double) i / vertices->size();
+    for (unsigned int i = 0; i < geometry->size(); i++) {
+        percentageCylindersDrawn = (double) i / geometry->size();
 
         if (nextMaterial 
-                && percentageVerticesDrawn >= nextMaterial->bindThreshold) {
+                && percentageCylindersDrawn >= nextMaterial->bindThreshold) {
             nextMaterial->material.apply();
             nextMaterial = getNextMaterialBinding();
         }
         
-        //cout << "vertex " << i << " is " << *vertices->at(i) << endl;
+        geometry->at(i)->draw(mat);
+    }
+
+    
+    glBegin(GL_LINES);
+    glColor3f(1.0, 0.0, 0.0);
+    for (unsigned int i = 0; i < vertices->size(); i++) {
         glVertex(vertices->at(i));
     }
     glEnd();
