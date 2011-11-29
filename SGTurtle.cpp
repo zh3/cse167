@@ -13,23 +13,29 @@ using namespace std;
 
 SGTurtle::SGTurtle(const Material &material,
         const Vector3& newH, const Vector3 & newL, const Vector3 & newU, 
-        const Vector3 & newUp, const Vector3 & newOrigin)
+        const Vector3 & newUp, const Vector3 & newOrigin,
+        vector<LSystemMaterialBinding*> *newMaterialBindings)
         : SGGeode(material),
           h(newH), l(newL), u(newU), 
           hRotation(0.0), lRotation(0.0), uRotation(0.0),
           up(newUp), origin(newOrigin), 
           vertices(new vector<Vector3 *>()),
-          states(new stack<TurtleState *>()) {
+          states(new stack<TurtleState *>()),
+          //geometry(new vector<SGGeode *>()),
+          materialBindings(newMaterialBindings) {
     normalizeVectors();
 }
 
-SGTurtle::SGTurtle(const Material &material) 
+SGTurtle::SGTurtle(const Material &material, 
+        vector<LSystemMaterialBinding*> *newMaterialBindings) 
         : SGGeode(material),
           h(0.0, 0.0, -1.0), l(-1.0, 0.0, 0.0), u(0.0, 1.0, 0.0), 
           hRotation(0.0), lRotation(0.0), uRotation(0.0),
           up(1.0, 0.0, 0.0), origin(0.0, 0.0, 0.0),
           vertices(new vector<Vector3 *>()),
-          states(new stack<TurtleState *>()){
+          states(new stack<TurtleState *>()),
+          materialBindings(newMaterialBindings),
+          bindingsPtr(0) {
     normalizeVectors();
 }
 
@@ -43,6 +49,11 @@ SGTurtle::~SGTurtle() {
         states->pop();
     }
     
+    for (unsigned int i = 0; i < materialBindings->size(); i++) {
+        delete materialBindings->at(i);
+    }
+    
+    delete materialBindings;
     delete states;
     delete vertices;
 }
@@ -123,20 +134,43 @@ void SGTurtle::popState() {
 }
 
 void SGTurtle::draw(Matrix4 mat) {
-    glColor3f(1.0, 0.0, 0.0);
+    //glColor3f(1.0, 0.0, 0.0);
+    material.apply();
+    
+    bindingsPtr = 0;
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(mat.getPointer());
     
     glBegin(GL_LINES);
+    double percentageVerticesDrawn;
+    LSystemMaterialBinding *nextMaterial = getNextMaterialBinding();
+
     for (unsigned int i = 0; i < vertices->size(); i++) {
+        percentageVerticesDrawn = (double) i / vertices->size();
+
+        if (nextMaterial 
+                && percentageVerticesDrawn >= nextMaterial->bindThreshold) {
+            nextMaterial->material.apply();
+            nextMaterial = getNextMaterialBinding();
+        }
+        
         //cout << "vertex " << i << " is " << *vertices->at(i) << endl;
         glVertex(vertices->at(i));
     }
     glEnd();
     
     glPopMatrix();
+}
+
+LSystemMaterialBinding *SGTurtle::getNextMaterialBinding() {
+    if (materialBindings && bindingsPtr < materialBindings->size()) {
+        return materialBindings->at(bindingsPtr);
+        bindingsPtr++;
+    } else {
+        return NULL;
+    }
 }
 
 void SGTurtle::normalizeVectors() {

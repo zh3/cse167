@@ -12,13 +12,16 @@
 
 using namespace std;
 
-SGLSystem::SGLSystem(const Material &material, const string &startString, 
+SGLSystem::SGLSystem(const Material &initMaterial, 
+            const string &startString, 
             std::multimap<char, LSystemRule*> *newRules, 
             std::map<char, TurtleAction*> *newVariableActions,
-            double rotateAngle, int maxRecursionDepth) 
-        : SGGeode(material), 
-          turtle(new SGTurtle(material)),
-          start(startString), rules(newRules), 
+            double rotateAngle, int maxRecursionDepth,
+            std::vector<LSystemMaterialBinding*> *newMaterialBindings) 
+        : SGGeode(initMaterial), 
+          turtle(new SGTurtle(initMaterial, newMaterialBindings)),
+          start(startString), 
+          rules(newRules), 
           variableActions(newVariableActions),
           angle(rotateAngle),
           maxDepth(maxRecursionDepth) {

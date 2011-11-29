@@ -14,15 +14,19 @@
 #include "Vector4.h"
 #include "SGGeode.h"
 #include "TurtleState.h"
+#include "LSystemMaterialBinding.h"
 #include <vector>
 #include <stack>
+#include <queue>
 
 class SGTurtle : public SGGeode {
 public:
     SGTurtle(const Material &material, 
             const Vector3& newH, const Vector3 & newL, const Vector3 & newU, 
-            const Vector3 & newUp, const Vector3 & newOrigin);
-    SGTurtle(const Material &material);
+            const Vector3 & newUp, const Vector3 & newOrigin,
+            std::vector<LSystemMaterialBinding*> *newMaterialBindings = NULL);
+    SGTurtle(const Material &material, 
+            std::vector<LSystemMaterialBinding*> *newMaterialBindings = NULL);
     virtual ~SGTurtle();
     
     void move(double distance);
@@ -49,12 +53,18 @@ private:
     
     std::vector<Vector3 *> *vertices;
     std::stack<TurtleState *> *states;
+    //std::vector<SGGeode *> *geometry;
+    
+    std::vector<LSystemMaterialBinding*> *materialBindings;
+    
+    int bindingsPtr;
     
     void normalizeVectors();
     Matrix4 getTurtleMatrix();
     Matrix4 getTurtleBasisRotationMatrix();
     void setBasis(const Matrix4 &turtleMatrix);
     void setBasisRotation(const Matrix4 &turtleMatrix);
+    LSystemMaterialBinding *getNextMaterialBinding();
 };
 
 #endif	/* SGTURTLE_H */
