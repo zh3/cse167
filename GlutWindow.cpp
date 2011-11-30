@@ -27,6 +27,8 @@ Matrix4 GlutWindow::identity;
 SGNode *GlutWindow::root;
 unsigned int GlutWindow::framesDrawn = 0;
 struct timeval GlutWindow::startTime;
+Vector3 direction(0,0,10);
+bool wPressed = false, aPressed = false, sPressed = false, dPressed = false;
 
 const unsigned int GlutWindow::FRAMERATE_MEASURE_INTERVAL = 100;
 const double GlutWindow::FOV = 60.0;
@@ -35,6 +37,8 @@ const double GlutWindow::Z_FAR = 100.0;
 
 void GlutWindow::idleCallback(void) {
 
+    if (wPressed || aPressed || sPressed || dPressed) 
+      keyboardMovement();
 
     displayCallback();
 }
@@ -72,7 +76,7 @@ void GlutWindow::displayCallback(void) {
             += (double) (currentTime.tv_usec - startTime.tv_usec) / 1000000.0;
         frameRate = FRAMERATE_MEASURE_INTERVAL / secsPassed;
         
-        cout << frameRate << " fps" << endl;
+//        cout << frameRate << " fps" << endl;
         
         framesDrawn = 0;
         gettimeofday(&startTime, 0);
@@ -103,10 +107,91 @@ void GlutWindow::mouseCallback(int button, int state, int x, int y) {
     }
 }
 
+void GlutWindow::keyboardCallback(unsigned char key, int, int)
+{
+  switch (key)
+  {
+    case 'w':
+      wPressed = true;
+      keyboardMovement();
+      break;
+
+    case 'a':
+      aPressed = true;
+      keyboardMovement();
+      break;
+
+    case 's':
+      sPressed = true;
+      keyboardMovement();
+      break;
+
+    case 'd':
+      dPressed = true;
+      keyboardMovement();
+      break;
+  }
+}
+
+void GlutWindow::keyboardMovement()
+{
+  Matrix4 matrix;
+
+  glMatrixMode(GL_MODELVIEW);
+  direction.normalize();
+  if (wPressed)
+  {
+    matrix.toTranslationMatrix(-direction[0]/10, 0, -direction[2]/10);
+    glMultMatrixd(matrix.getPointer());
+    GlutWindow::displayCallback();
+  }
+  if (aPressed)
+  {
+    matrix.toTranslationMatrix(-direction[2]/10, 0, -direction[0]/10);
+    glMultMatrixd(matrix.getPointer());
+  }
+  if (sPressed)
+  {
+    matrix.toTranslationMatrix(direction[0]/10, 0, direction[2]/10);
+    glMultMatrixd(matrix.getPointer());
+  }
+  if (dPressed)
+  {
+    matrix.toTranslationMatrix(direction[2]/10, 0, direction[0]/10);
+    glMultMatrixd(matrix.getPointer());
+  }
+  GlutWindow::displayCallback();
+}
+
+void GlutWindow::keyboardUpCallback(unsigned char key, int, int) {
+  switch (key)
+  {
+    case 'w':
+      wPressed = false;
+      break;
+
+    case 'a':
+      aPressed = false;
+      break;
+
+    case 's':
+      sPressed = false;
+      break;
+
+    case 'd':
+      dPressed = false;
+      break;
+  }
+}
+
+
 void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     char **argv, string &title) {
     width = newWidth;
     height = newHeight;
+
+    Vector3 prev(width/2,height/2,0);
+    prevLocation = prev;
 
     glutInit(argc, argv);      	      	      // initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);   // open an OpenGL context with double buffering, RGB colors, and depth buffering
@@ -154,8 +239,10 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     glutDisplayFunc(GlutWindow::displayCallback);
     glutReshapeFunc(GlutWindow::reshapeCallback);
     glutIdleFunc(GlutWindow::idleCallback);
-    glutMotionFunc(GlutWindow::motionCallback);
+    glutPassiveMotionFunc(GlutWindow::motionCallback);
     glutMouseFunc(GlutWindow::mouseCallback);
+    glutKeyboardFunc(GlutWindow::keyboardCallback);
+    glutKeyboardUpFunc(GlutWindow::keyboardUpCallback);
 }
 
 void GlutWindow::enterGlutMainLoop(void) {
@@ -185,15 +272,23 @@ void GlutWindow::trackballDoRotation(Vector3 newLocation) {
     Matrix4 rotationMatrix;
 
     rotationAxis.cross(prevLocation, newLocation);
+
     //rotationAxis.normalize();
     degAngle = acos(prevLocation.dot(newLocation)) * 180.0;
+    degAngle /= 300;
+    
+    // needed for passive mouse motion - gives funky degree at startup
+    if (isnan(degAngle))
+      degAngle = .1;
 
-    rotationMatrix.toRotationMatrix(degAngle, rotationAxis);
+    rotationMatrix.toRotationMatrix(-degAngle, rotationAxis);
     rotationMatrix.multiply(trackballRotation);
     trackballRotation = rotationMatrix;
-    
     glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixd(trackballRotation.getPointer());
+//    glLoadMatrixd(trackballRotation.getPointer());
+    glMultMatrixd(trackballRotation.getPointer());
+    
+    direction = rotationMatrix.multiply(direction);
 }
 
 // map the x coordinate of the mouse location on the window to the X coordinate

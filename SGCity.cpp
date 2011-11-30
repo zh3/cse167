@@ -101,12 +101,11 @@ SGMatrixTransform *SGCity::getBlock()
     while (totalWidth <  blockWidth - 10)
     {
       houseWidth = rand() % 10;
-
-      if (houseWidth < 1)
+      if (houseWidth < 3) // stop houses being 1 unit wide 
       {
-        houseWidth += 5; 
+        houseWidth += 3; 
       }
-
+     
       house = new SGHouse(material, seed, houseWidth); // create the house
       houseMatrix.toTranslationMatrix(-blockWidth/2 + totalWidth + houseWidth/2, 0, 0); // move back into position
       houseTransform = new SGMatrixTransform(houseMatrix);

@@ -29,6 +29,11 @@ public:
     static void setSceneGraph(SGNode *newRoot);
     static void setCamera(const Vector3 &cameraLoc, const Vector3 &lookAt, 
                           const Vector3 &upVec);
+    static void keyboardCallback(unsigned char key, int, int);
+    static void keyboardUpCallback(unsigned char key, int, int);
+    static void keyboardMovement();
+
+
     
 private:
     static Vector3 prevLocation;

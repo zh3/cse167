@@ -18,11 +18,16 @@ static const double TILE_SIZE = 1.0;
 static const double TILE_HEIGHT = 0.05;
 static const double ROBOT_HEIGHT = 1.0;
 
+
 int main(int argc, char** argv) {
-    Vector3 cam(0.0, 5.0, 5.0);
+/*    Vector3 cam(0.0, 5.0, 5.0);
     Vector3 lookAt(0.0, 0.0, 0.0);
-    Vector3 up(0.0, 1.0, 0.0);
-    
+    Vector3 up(0.0, 1.0, 0.0);*/
+
+    Vector3 cam(0.0, 00.0, 30.0);
+    Vector3 lookAt(0.0, 0.0, 50.0);
+    Vector3 up(0.0, 1.0, 0.0); 
+
     string name("Procedural World");
     GlutWindow::initializeWindow(512, 512, &argc, argv, name);
 
@@ -50,6 +55,7 @@ SGNode *getTiledRobot(Material &limbMaterial, Material &bodyMaterial,
     tileBot->addChild(tileTransform);
     tileBot->addChild(tileRobot);
     
+    srand(time(NULL));
     SGCity *city = new SGCity(limbMaterial, 100, 100);
     tileBot->addChild(city);
     return tileBot;

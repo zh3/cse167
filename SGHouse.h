@@ -26,6 +26,7 @@ private:
     
     SGNode *getHouse();
     void addRoof(SGMatrixTransform *house, double width, double stories); 
+    void addSidewaysRoof(SGMatrixTransform *house, double width, double stories);
     void addWindows(SGMatrixTransform *house, double width, double stories); 
     void addChimney(SGMatrixTransform *house, double width, double stories);
     void addBeams(SGMatrixTransform *house, double width, double stories);
