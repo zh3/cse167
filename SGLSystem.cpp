@@ -40,6 +40,10 @@ SGLSystem::~SGLSystem() {
 }
 
 void SGLSystem::draw(Matrix4 mat) {
+    Matrix4 transform;
+    transform.toRotationMatrixX(90.0);
+    mat.multiply(transform);
+    
     turtle->draw(mat);
 }
 

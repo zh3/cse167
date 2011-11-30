@@ -173,8 +173,7 @@ void SGTurtle::draw(Matrix4 mat) {
     bindingsPtr = 0;
     
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glMultMatrixd(mat.getPointer());
+    
     
     
     double percentageCylindersDrawn;
@@ -191,7 +190,9 @@ void SGTurtle::draw(Matrix4 mat) {
         
         geometry->at(i)->draw(mat);
     }
-
+    
+    glPushMatrix();
+    glMultMatrixd(mat.getPointer());
     
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0);
