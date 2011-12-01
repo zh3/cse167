@@ -154,6 +154,7 @@ void GlutWindow::keyboardMovement()
     float xrotrad, yrotrad;
     yrotrad = (yrot / 180 * 3.141592654f);
     xrotrad = (xrot / 180 * 3.141592654f);
+
     xpos += float(sin(yrotrad)) ;
     zpos -= float(cos(yrotrad)) ;
     ypos -= float(sin(xrotrad)) ;
@@ -167,6 +168,7 @@ void GlutWindow::keyboardMovement()
     float xrotrad, yrotrad;
     yrotrad = (yrot / 180 * 3.141592654f);
     xrotrad = (xrot / 180 * 3.141592654f);
+
     xpos -= float(sin(yrotrad));
     zpos += float(cos(yrotrad)) ;
     ypos += float(sin(xrotrad));
@@ -178,12 +180,14 @@ void GlutWindow::keyboardMovement()
   }
   
   if (zPressed) {
-    xrot += 1;
+    if (!(xrot > 180))
+      xrot += 1;
     if (xrot >360) xrot -= 360;
   }
   
   if (qPressed) {
-    xrot -= 1;
+    if (!(xrot < 0))
+      xrot -= 1;
     if (xrot < -360) xrot += 360;
   }
   

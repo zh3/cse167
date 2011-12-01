@@ -21,14 +21,13 @@ public:
 private:
     double width;
     double seed;
-    double blockWidth;
 
     Texture *textures[12];
 
     SGNode *city;
     
     SGNode *getCity();
-    SGMatrixTransform *getBlock();
+    SGMatrixTransform *getBlock(double blockWidth);
 
 };
 

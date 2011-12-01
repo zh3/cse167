@@ -119,7 +119,10 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
       }
 
       else if (beams && i < stories - 1)
+      {
         mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[9]);//texture);
+        tex = 9;
+      }
       else
         mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[tex]);//texture);
 
@@ -322,7 +325,7 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     // rotate
     transform.toRotationMatrixZ(-(angle * 180 / (2*acos(0))));
     // translate up and over to height 
-    matrix2.toTranslationMatrix(width/2, (stories-.5*stories), 0);//stories*(1-roofHeight), 0);
+    matrix2.toTranslationMatrix(width/2, (stories-.5*stories), 0);
     
     transform.multiply(matrix);
     matrix2.multiply(transform);
@@ -340,7 +343,7 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     // rotate
     transform.toRotationMatrixZ(angle * 180 / (2*acos(0)));
     // translate up and over to height 
-    matrix2.toTranslationMatrix(-width/2, (stories-.5*stories), 0);//stories*(1-roofHeight), 0);
+    matrix2.toTranslationMatrix(-width/2, (stories-.5*stories), 0);
 
     matrix2.multiply(transform);
     matrix2.multiply(matrix);
@@ -354,19 +357,16 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     // length of diagonal = width of roof
     SGTexturedCuboid *midRoof = new SGTexturedCuboid(material, pow(.5*pow(width,2), .5), 
       pow(.5*pow(width,2), .5), 1.99, textures[innerRoofTex]);
-//    SGCuboid *midRoof = new SGCuboid(material, roofWidth-.7, roofWidth-.7, 1.99);
 
     matrix.toRotationMatrixZ(-45);
     matrix2.toTranslationMatrix(0, stories-.5*stories, 0); 
 
-    transform.toScalingMatrix(1, roofHeight*width*.5, 1);//roofHeight / (.5 * width), 1);
+    transform.toScalingMatrix(1, roofHeight*width*.5, 1);
 
 
     // translate up, then rotate, then scale
     transform.multiply(matrix);
     matrix2.multiply(transform);
-    //matrix2.multiply(matrix);
-    //transform.multiply(matrix2);
 
     SGMatrixTransform *midRoofTransform = new SGMatrixTransform(matrix2);
     midRoofTransform->addChild(midRoof);
