@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
     Vector3 lookAt(0.0, 0.0, 0.0);
     Vector3 up(0.0, 1.0, 0.0);*/
 
-    Vector3 cam(0.0, 0.0, 0.0);
-    Vector3 lookAt(0.0, 0.0, -5.0);
+    Vector3 cam(0.0, 0.0, 15.0);
+    Vector3 lookAt(0.0, 0.0, -15.0);
     Vector3 up(0.0, 1.0, 0.0); 
 
     string name("Procedural World");

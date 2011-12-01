@@ -93,7 +93,7 @@ SGNode *SGCity::getCity() {
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    Texture *t = new Texture("grass.ppm");
+    Texture *t = new Texture("textures/grass.ppm");
     Matrix4 floorTransformMatrix;
     floorTransformMatrix.toRotationMatrixX(-90.0);
     SGMatrixTransform *floorTransform 
@@ -108,16 +108,59 @@ SGNode *SGCity::getCity() {
     SGTexturedPlane *plane;
     SGMatrixTransform *transform;
     Matrix4 matrix, matrix2;
+
+    // floor
+    texture = new Texture("./textures/wall3.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
     
-    // front
-    texture = new Texture("./textures/skyboxFront.ppm");
-    plane = new SGTexturedPlane(material, texture, 100, 100, 1);
-    matrix.toTranslationMatrix(0, 75, -10);
-    matrix2.toRotationMatrixX(90);
-    matrix2.multiply(matrix);
+    matrix.toRotationMatrixX(90);
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
     transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
     city->addChild(transform);
+
+    
+    // front
+    texture = new Texture("./textures/skyboxFront.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+
+    matrix.toTranslationMatrix(0, 50, -50);
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
+
+    // left
+    texture = new Texture("./textures/skyboxLeft.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+
+    matrix.toTranslationMatrix(-50, 50, 0);
+    matrix2.toRotationMatrixY(90);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
+
+    // right
+    texture = new Texture("./textures/skyboxRight.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+
+    matrix.toTranslationMatrix(50, 50, 0);
+    matrix2.toRotationMatrixY(90);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
+
+
+    city->addChild(block);
+
 
     return city;
 }
