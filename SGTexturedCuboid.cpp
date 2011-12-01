@@ -19,14 +19,14 @@ SGTexturedCuboid::SGTexturedCuboid(const Material &material, double newXSize, do
     Matrix4 rotation;
     
     SGTexturedPlane *frontFace 
-        = new SGTexturedPlane(material, texture, xSize, ySize, 
+        = new SGTexturedPlane(material, NULL, xSize, ySize, 
             DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(0.0, 0.0, zSize / 2.0);
     SGMatrixTransform *frontTransform = new SGMatrixTransform(transform);
     frontTransform->addChild(frontFace);
     
     SGTexturedPlane *backFace
-        = new SGTexturedPlane(material, texture, xSize, ySize, 
+        = new SGTexturedPlane(material, NULL, xSize, ySize, 
                               DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(0.0, 0.0, -zSize / 2.0);
     rotation.toRotationMatrixX(180.0);
@@ -35,7 +35,7 @@ SGTexturedCuboid::SGTexturedCuboid(const Material &material, double newXSize, do
     backTransform->addChild(backFace);
     
     SGTexturedPlane *leftFace
-        = new SGTexturedPlane(material, texture, zSize, ySize, 
+        = new SGTexturedPlane(material, NULL, zSize, ySize, 
                               DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(-xSize / 2.0, 0.0, 0.0);
     rotation.toRotationMatrixY(-90.0);
@@ -44,7 +44,7 @@ SGTexturedCuboid::SGTexturedCuboid(const Material &material, double newXSize, do
     leftTransform->addChild(leftFace);
     
     SGTexturedPlane *rightFace
-        = new SGTexturedPlane(material, texture, zSize, ySize, 
+        = new SGTexturedPlane(material, NULL, zSize, ySize, 
                               DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(xSize / 2.0, 0.0, 0.0);
     rotation.toRotationMatrixY(90.0);
@@ -53,7 +53,7 @@ SGTexturedCuboid::SGTexturedCuboid(const Material &material, double newXSize, do
     rightTransform->addChild(rightFace);
     
     SGTexturedPlane *topFace
-        = new SGTexturedPlane(material, texture, xSize, zSize, 
+        = new SGTexturedPlane(material, NULL, xSize, zSize, 
                               DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(0.0, ySize / 2.0, 0.0);
     rotation.toRotationMatrixX(-90.0);
@@ -62,7 +62,7 @@ SGTexturedCuboid::SGTexturedCuboid(const Material &material, double newXSize, do
     topTransform->addChild(topFace);
     
     SGTexturedPlane *bottomFace
-        = new SGTexturedPlane(material, texture, xSize, zSize, 
+        = new SGTexturedPlane(material, NULL, xSize, zSize, 
                               DEFAULT_RESOLUTION);
     transform.toTranslationMatrix(0.0, -ySize / 2.0, 0.0);
     rotation.toRotationMatrixX(90.0);
@@ -82,6 +82,8 @@ SGTexturedCuboid::~SGTexturedCuboid() {
 }
 
 void SGTexturedCuboid::draw(Matrix4 mat) {
+    texture->bindTexture();
+    
     for (int i = 0; i < 6; i++) {
         faces[i]->draw(mat);
     }
