@@ -263,7 +263,7 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
 //    glLightfv(GL_LIGHT0, GL_SPECULAR, pointlight_specular);
 //    glLightfv(GL_LIGHT0, GL_POSITION, pointlight_position);
 //    
-//    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
     glEnable(GL_NORMALIZE);
     
     glEnable(GL_TEXTURE_2D);

@@ -30,7 +30,7 @@ private:
     void addRoof(SGMatrixTransform *house, double width, double stories, Texture *textures[]); 
     void addSidewaysRoof(SGMatrixTransform *house, double width, double stories);
     void addWindows(SGMatrixTransform *house, double width, double stories, Texture *textures[]); 
-    void addChimney(SGMatrixTransform *house, double width, double stories);
+    void addChimney(SGMatrixTransform *house, double width, double stories, Texture *textures[]);
     void addBeams(SGMatrixTransform *house, double width, double stories, Texture *textures[]);
 
 };
