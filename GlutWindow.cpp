@@ -131,12 +131,12 @@ void GlutWindow::keyboardCallback(unsigned char key, int, int)
       keyboardMovement();
       break;
       
-      case 'z':
+    case 'z':
       zPressed = true;
       keyboardMovement();
       break;
       
-      case 'q':
+    case 'q':
       qPressed = true;
       keyboardMovement();
       break;

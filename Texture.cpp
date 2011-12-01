@@ -22,19 +22,11 @@ Texture::~Texture() {
 }
 
 void Texture::bindTexture() {
-    // Generate the texture
-  glTexImage2D(GL_TEXTURE_2D, 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+  // Set this texture to be the one we are working with
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
   
-  // Select GL_MODULATE to mix texture with color for shading:
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-  // Use bilinear filtering:
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  // Wrap texture over at the edges:
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  // Set this texture to be the one we are working with
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
 }
 
 /** Load a ppm file from disk.
@@ -107,9 +99,23 @@ void Texture::loadTexture(const char *name)
     if (tdata==NULL) return;
 
     // Create ID for texture
-    glGenTextures(1, &texture[0]);   
-
+    glGenTextures(1, &texture[0]);
+    
     // Set this texture to be the one we are working with
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+  glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
+    // Generate the texture
+  glTexImage2D(GL_TEXTURE_2D, 0, 3, twidth, theight, 0, GL_RGB, GL_UNSIGNED_BYTE, tdata);
+  
+  // Select GL_MODULATE to mix texture with color for shading:
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+  // Use bilinear filtering:
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // Wrap texture over at the edges:
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
