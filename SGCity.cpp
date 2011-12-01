@@ -16,11 +16,25 @@
 #include <algorithm>
 #include <iostream>
 #include <math.h>
+#include "Texture.h"
 using namespace std;
 
 SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeode(material) {
   seed = newSeed;
   blockWidth = newBlockWidth;
+  
+  textures[0] = new Texture("./textures/wall1.ppm");
+  textures[1] = new Texture("./textures/wall2.ppm");
+  textures[2] = new Texture("./textures/wall3.ppm");
+  textures[3] = new Texture("./textures/wall4.ppm");
+  textures[4] = new Texture("./textures/wall1.ppm");
+  textures[5] = new Texture("./textures/wall2.ppm");
+  textures[6] = new Texture("./textures/wall3.ppm");
+  textures[7] = new Texture("./textures/wall4.ppm");
+  textures[8] = new Texture("./textures/wall1.ppm");
+  textures[9] = new Texture("./textures/wall2.ppm");
+  textures[10] = new Texture("./textures/wall3.ppm");
+
   city = getCity();
 }
 
@@ -78,12 +92,12 @@ SGNode *SGCity::getCity() {
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    // testing the 100x100 floor
-    /*blockTransform.toScalingMatrix(100, 1, 100);
+   //  testing the 100x100 floor
+    blockTransform.toScalingMatrix(100, 1, 100);
     SGCuboid *floor = new SGCuboid(material, 1, .00001, 1);
     block = new SGMatrixTransform(blockTransform);
     block->addChild(floor);
-    city->addChild(block);*/
+    city->addChild(block);
 
     return city;
 }
@@ -106,7 +120,7 @@ SGMatrixTransform *SGCity::getBlock()
         houseWidth += 3; 
       }
      
-      house = new SGHouse(material, seed, houseWidth); // create the house
+      house = new SGHouse(material, seed, houseWidth, textures); // create the house
       houseMatrix.toTranslationMatrix(-blockWidth/2 + totalWidth + houseWidth/2, 0, 0); // move back into position
       houseTransform = new SGMatrixTransform(houseMatrix);
 
@@ -117,7 +131,7 @@ SGMatrixTransform *SGCity::getBlock()
     }
     
     // Create last house to fill in gap to edge of block
-    house = new SGHouse(material, seed, blockWidth - totalWidth); // create the house
+    house = new SGHouse(material, seed, blockWidth - totalWidth, textures); // create the house
     houseMatrix.toTranslationMatrix((-blockWidth/2 + totalWidth + houseWidth/2), 0, 0); // move back into position
     houseTransform = new SGMatrixTransform(houseMatrix);
 

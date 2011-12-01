@@ -10,6 +10,7 @@
 
 #include "SGGeode.h"
 #include "SGMatrixTransform.h"
+#include "Texture.h"
 
 class SGCity : public SGGeode {
 public:
@@ -21,6 +22,8 @@ private:
     double width;
     double seed;
     double blockWidth;
+
+    Texture *textures[11];
 
     SGNode *city;
     

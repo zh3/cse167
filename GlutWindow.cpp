@@ -254,7 +254,7 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     glColorMaterial ( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
     //glEnable ( GL_COLOR_MATERIAL );
 
-    GLfloat pointlight_ambient[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat pointlight_ambient[] = {0.3, 0.3, 0.3, 1.0};
     GLfloat pointlight_diffuse[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat pointlight_specular[] = {0.3, 0.3, 0.3, 1.0};
     GLfloat pointlight_position[] = { 0.0, 0.0, 5.0, 1.0 };
