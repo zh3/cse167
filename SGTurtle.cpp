@@ -168,7 +168,7 @@ void SGTurtle::popState() {
 
 void SGTurtle::draw(Matrix4 mat) {
     //glColor3f(1.0, 0.0, 0.0);
-    material.apply();
+    //material.apply();
     
     bindingsPtr = 0;
     
@@ -202,6 +202,14 @@ void SGTurtle::draw(Matrix4 mat) {
     glEnd();
     
     glPopMatrix();
+}
+
+void SGTurtle::setMaterial(const Material& mat) {
+    material = mat;
+}
+
+Material SGTurtle::getMaterial() {
+    return material;
 }
 
 LSystemMaterialBinding *SGTurtle::getNextMaterialBinding() {

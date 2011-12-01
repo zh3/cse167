@@ -29,3 +29,9 @@ void SGGrid::addChild(SGNode* child, int row, int col) {
     SGGroup::addChild(translation);
 }
 
+void SGGrid::draw(Matrix4 mat) {
+    for (unsigned int i = 0; i < children->size(); i++) {
+        children->at(i)->draw(mat);
+    }
+}
+

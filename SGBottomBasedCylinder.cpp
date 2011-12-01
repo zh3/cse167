@@ -25,7 +25,7 @@ SGBottomBasedCylinder::~SGBottomBasedCylinder() {
 }
 
 void SGBottomBasedCylinder::draw(Matrix4 mat) {
-    //material.apply();
+    material.apply();
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();

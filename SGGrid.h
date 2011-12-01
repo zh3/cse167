@@ -15,6 +15,7 @@ public:
     SGGrid(int rows, int cols, double _xSize, double _zSize);
     virtual ~SGGrid();
     void addChild(SGNode *child, int row, int col);
+    void draw(Matrix4 mat);
 private:
     int nRows;
     int nCols;

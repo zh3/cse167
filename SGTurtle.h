@@ -40,6 +40,8 @@ public:
     void popState();
     
     void draw(Matrix4 mat);
+    void setMaterial(const Material &mat);
+    Material getMaterial();
 private:
     static const double EPSILON = 0.0001;
     Vector3 h;
