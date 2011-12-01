@@ -38,9 +38,16 @@ void SGTexturedPlane::draw(Matrix4 mat) {
     if (texture) texture->bindTexture();
     material.apply();
     glBegin(GL_QUADS);
+    
+    Vector3 textureCoordinates;
     for (int i = 0; i < getNumVertices(); i++) {
         glNormal(normal);
-        glTexture(vertices[i]);
+        
+        textureCoordinates = *vertices[i];
+        textureCoordinates.x = (textureCoordinates.x / xSize) * resolution;
+        textureCoordinates.y = (textureCoordinates.y / ySize) * resolution;
+        
+        glTexture(textureCoordinates);
         glVertex(vertices[i]);
     }
     glEnd();
