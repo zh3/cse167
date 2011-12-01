@@ -33,7 +33,7 @@ bool wPressed = false, aPressed = false, sPressed = false, dPressed = false;
 const unsigned int GlutWindow::FRAMERATE_MEASURE_INTERVAL = 100;
 const double GlutWindow::FOV = 60.0;
 const double GlutWindow::Z_NEAR = 1.0;
-const double GlutWindow::Z_FAR = 100.0;
+const double GlutWindow::Z_FAR = 500.0;
 
 void GlutWindow::idleCallback(void) {
 
@@ -141,23 +141,23 @@ void GlutWindow::keyboardMovement()
   direction.normalize();
   if (wPressed)
   {
-    matrix.toTranslationMatrix(-direction[0]/10, 0, -direction[2]/10);
+    matrix.toTranslationMatrix(-direction[0], 0, -direction[2]);
     glMultMatrixd(matrix.getPointer());
     GlutWindow::displayCallback();
   }
   if (aPressed)
   {
-    matrix.toTranslationMatrix(-direction[2]/10, 0, -direction[0]/10);
+    matrix.toTranslationMatrix(-direction[2], 0, -direction[0]);
     glMultMatrixd(matrix.getPointer());
   }
   if (sPressed)
   {
-    matrix.toTranslationMatrix(direction[0]/10, 0, direction[2]/10);
+    matrix.toTranslationMatrix(direction[0], 0, direction[2]);
     glMultMatrixd(matrix.getPointer());
   }
   if (dPressed)
   {
-    matrix.toTranslationMatrix(direction[2]/10, 0, direction[0]/10);
+    matrix.toTranslationMatrix(direction[2], 0, direction[0]);
     glMultMatrixd(matrix.getPointer());
   }
   GlutWindow::displayCallback();
@@ -275,7 +275,7 @@ void GlutWindow::trackballDoRotation(Vector3 newLocation) {
 
     //rotationAxis.normalize();
     degAngle = acos(prevLocation.dot(newLocation)) * 180.0;
-    degAngle /= 300;
+    degAngle /= 100;
     
     // needed for passive mouse motion - gives funky degree at startup
     if (isnan(degAngle))
