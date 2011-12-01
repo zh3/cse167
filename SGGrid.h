@@ -16,6 +16,7 @@ public:
     virtual ~SGGrid();
     void addChild(SGNode *child, int row, int col);
     void draw(Matrix4 mat);
+    bool isOccupied(int row, int col);
 private:
     int nRows;
     int nCols;
@@ -24,6 +25,7 @@ private:
     double zSize;
     double xInc;
     double zInc;
+    bool **occupied;
 };
 
 #endif	/* SGGRID_H */
