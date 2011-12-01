@@ -96,20 +96,18 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
       }
     }
 
-
     SGMatrixTransform *mainWallsTransform;
     SGTexturedCuboid *mainWalls;
 
     int tex = rand() % 4;
-    //(textures[rand() % 4])->bindTexture();
 
-
+    // cycle through stories
     for (int i = 0; i < stories; i++)
     {
       houseTransform.toTranslationMatrix(0, stories/2 - i-.5, 0);
-
       mainWallsTransform = new SGMatrixTransform(houseTransform);
-
+      
+      // if house has beams, make first story brick or plaster
       if (beams && i == stories - 1)
       {
         if (rand() % 2 == 0)
@@ -117,21 +115,28 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
         else
           mainWalls = new SGTexturedCuboid(material, width-.2, 1, 2-.3, textures[9]);//texture);
       }
-
+      
+      // if house has beams, make all stories > 1 plaster
       else if (beams && i < stories - 1)
       {
         mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[9]);//texture);
         tex = 9;
       }
+      // if no beams, pick texture randomly
       else
+      {
         mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[tex]);//texture);
-
+      }
 
       mainWallsTransform->addChild(mainWalls);
       house->addChild(mainWallsTransform);
     }
 
-    addRoof(house, width, stories, textures, tex);
+    if (rand() % 3 == 0)
+      addSidewaysRoof(house, width, stories, textures, tex);
+    else
+      addRoof(house, width, stories, textures, tex);
+
     addWindows(house, width, stories, textures);
 
     if (rand() % 3 == 0)
@@ -193,79 +198,106 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories,
     }
 }
 
-void SGHouse::addSidewaysRoof(SGMatrixTransform *house, double width, double stories) {
-    double roofHeight = 1; // defines pitch of roof
+void SGHouse::addSidewaysRoof(SGMatrixTransform *house, double width, double stories, 
+  Texture *textures[], int innerRoofTex) {
+    double roofHeight; // defines pitch of roof
     double angle; // stored in radians
     double roofWidth; // length of one side of roof
     Matrix4 matrix, matrix2, transform; // used in transforming the roof halves
 
-    angle = atan2(roofHeight, width/2) - .002;
-    roofWidth = pow(pow((width / 2), 2) + pow(roofHeight, 2), .5) + 1;
+    angle = rand() % 35;
+    if (angle < 10)
+      angle += 10;
 
+    if (width > 2 && angle > 20)
+      angle -= 10;
+    if (width == 2 && angle < 25)
+      angle += 10;
+
+    angle = angle*2*acos(0)/180;
+    roofHeight = 2*tan(angle)/2;
+
+    // calculate length of roof half
+    roofWidth = pow(pow((2/ 2), 2) + pow(roofHeight, 2), .5) + .7;
+    
     Vector4 ambient(0.2, 0.2, 0.2, 1.0);
     Vector4 diffuse(0.6, 0.6, 0.6, 1.0);
     Vector4 specular(0.2, 0.2, 0.2, 1.0);
     double shininess = 50.0;
     Material material(ambient, diffuse, specular, shininess); 
 
-    Vector4 redAmbient(1.0, 0.0, 0.0, 1.0);
+    Vector4 redAmbient(0.5, 0.5, 0.5, 1.0);
     Material redMaterial(redAmbient, diffuse, specular, shininess); 
 
+    // roof textures are 4,5,6,7
+    int tex = rand() % 4 + 4;
 
     /* Left roof */
 
-    SGCuboid *leftRoof = new SGCuboid(redMaterial, roofWidth, .1, width);
+    SGTexturedCuboid *leftRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1, 
+      width + .5, textures[tex]);
 
     // translate pivot to origin
-    matrix.toTranslationMatrix((roofWidth/2 - width/2), .05, 0); 
+    matrix.toTranslationMatrix((roofWidth/2 - 2/2) - .3, .05, 0); 
     // rotate
-    transform.toRotationMatrixZ(-angle * 180 / 2*acos(0));
+    transform.toRotationMatrixZ(-(angle * 180 / (2*acos(0))));
     // translate up and over to height 
-    matrix2.toTranslationMatrix(width/2, stories*(1-roofHeight), 0);
-
+    matrix2.toTranslationMatrix(2/2, (stories-.5*stories), 0);
+    
+    transform.multiply(matrix);
     matrix2.multiply(transform);
-    matrix2.multiply(matrix);
 
-    SGMatrixTransform *leftRoofTransform = new SGMatrixTransform(matrix2);
+    transform.toRotationMatrixY(90);
+    transform.multiply(matrix2);
+
+    SGMatrixTransform *leftRoofTransform = new SGMatrixTransform(transform);
     leftRoofTransform->addChild(leftRoof);
     
 
     /* Right roof */
 
 
-    SGCuboid *rightRoof = new SGCuboid(redMaterial, roofWidth, .1, 1.5);
+    SGTexturedCuboid *rightRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1,
+      width + .5, textures[tex]);
     // translate pivot to origin
-    matrix.toTranslationMatrix(-(roofWidth/2 - width/2), .05, 0); 
+    matrix.toTranslationMatrix(-(roofWidth/2 - 2/2) + .3, .05, 0); 
     // rotate
-    transform.toRotationMatrixZ(angle * 180 / 2*acos(0));
+    transform.toRotationMatrixZ(angle * 180 / (2*acos(0)));
     // translate up and over to height 
-    matrix2.toTranslationMatrix(-width/2, stories*(1-roofHeight), 0);
+    matrix2.toTranslationMatrix(-2/2, (stories-.5*stories), 0);
 
     matrix2.multiply(transform);
     matrix2.multiply(matrix);
+    transform.toRotationMatrixY(90);
+    transform.multiply(matrix2);
 
-    SGMatrixTransform *rightRoofTransform = new SGMatrixTransform(matrix2);
+    SGMatrixTransform *rightRoofTransform = new SGMatrixTransform(transform);
     rightRoofTransform->addChild(rightRoof);
 
 
     /* Inner triangle */
-
-    SGCuboid *midRoof = new SGCuboid(material,pow(.5*pow(width,2), .5), 
-      pow(.5*pow(width,2), .5), 1);
-  
-    matrix.toRotationMatrixZ(45);
-    transform.toScalingMatrix(1, roofHeight / (.5 * roofWidth), .99);
-    matrix2.toTranslationMatrix(0, stories*(1-roofHeight), 0); 
     
+    // length of diagonal = width of roof
+    SGTexturedCuboid *midRoof = new SGTexturedCuboid(material, pow(.5*pow(2,2), .5), 
+      pow(.5*pow(2,2), .5), width, textures[innerRoofTex]);
+
+    matrix.toRotationMatrixZ(-45);
+    matrix2.toTranslationMatrix(0, stories-.5*stories, 0); 
+
+    transform.toScalingMatrix(1, roofHeight*2*.5, 1);
+
+
     // translate up, then rotate, then scale
     transform.multiply(matrix);
     matrix2.multiply(transform);
 
-    SGMatrixTransform *midRoofTransform = new SGMatrixTransform(matrix2);
+    transform.toRotationMatrixY(90);
+    transform.multiply(matrix2);
+
+    SGMatrixTransform *midRoofTransform = new SGMatrixTransform(transform);
     midRoofTransform->addChild(midRoof);
 
     house->addChild(midRoofTransform);
-
     house->addChild(leftRoofTransform);
     house->addChild(rightRoofTransform);
 
@@ -289,6 +321,7 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     // calculate angle to rotate roof halves based on roof height
     angle = atan2(roofHeight, (width)/2);
 */
+
     angle = rand() % 35;
     if (angle < 10)
       angle += 10;
