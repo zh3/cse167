@@ -93,16 +93,6 @@ SGNode *SGCity::getCity() {
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    Texture *t = new Texture("textures/grass.ppm");
-    Matrix4 floorTransformMatrix;
-    floorTransformMatrix.toRotationMatrixX(-90.0);
-    SGMatrixTransform *floorTransform 
-            = new SGMatrixTransform(floorTransformMatrix);
-    SGNode *floor = new SGTexturedPlane(material, t, 100, 100, 50);
-    floorTransform->addChild(floor);
-    
-    city->addChild(floorTransform);
-
     // skybox
     Texture *texture;
     SGTexturedPlane *plane;
@@ -110,17 +100,16 @@ SGNode *SGCity::getCity() {
     Matrix4 matrix, matrix2;
 
     // floor
-   /*j texture = new Texture("./textures/wall3.ppm");
+    texture = new Texture("./textures/grass.ppm");
     plane = new SGTexturedPlane(material, texture, 1, 1, 1);
     
-    matrix.toRotationMatrixX(90);
-    matrix2.toScalingMatrix(100,100,1);
+    matrix.toRotationMatrixX(-90);
+    matrix2.toScalingMatrix(100,100,4);
     matrix.multiply(matrix2);
     transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
     city->addChild(transform);
-*/
-    
+
     // front
     texture = new Texture("./textures/skyboxFront.ppm");
     plane = new SGTexturedPlane(material, texture, 1, 1, 1);
