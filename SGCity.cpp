@@ -116,11 +116,19 @@ SGNode *SGCity::getCity() {
     transform->addChild(plane);
     city->addChild(transform);
 
+
+    Vector4 skyboxambient(1.0, 1.0, 1.0, 1.0);
+    Vector4 skyboxdiffuse(0.0, 0.0, 0.0, 1.0);
+    Vector4 skyboxspecular(0.0, 0.0, 0.0, 1.0);
+    double skyboxshininess = 50.0;
+    Material skyboxmaterial(skyboxambient, skyboxdiffuse, skyboxspecular, skyboxshininess); 
+
+
     // front
     texture = new Texture("./textures/skyboxFrontFlipped.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(skyboxmaterial, texture, 1, 1, 1);
 
-    matrix.toTranslationMatrix(0, 55, -55);
+    matrix.toTranslationMatrix(0, 5, -55);
     matrix2.toScalingMatrix(110,110,1);
     matrix.multiply(matrix2);
     matrix2.toRotationMatrixX(180);
@@ -142,9 +150,9 @@ SGNode *SGCity::getCity() {
 
     // back
     texture = new Texture("./textures/skyboxBackFlipped.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(skyboxmaterial, texture, 1, 1, 1);
 
-    matrix.toTranslationMatrix(0, 55, 55);
+    matrix.toTranslationMatrix(0, 5, 55);
     matrix2.toScalingMatrix(110,110,1);
     matrix.multiply(matrix2);
     matrix2.toRotationMatrixZ(180);
@@ -159,9 +167,9 @@ SGNode *SGCity::getCity() {
 
     // left
     texture = new Texture("./textures/skyboxLeftFlipped.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(skyboxmaterial, texture, 1, 1, 1);
 
-    matrix.toTranslationMatrix(-55, 55, 0);
+    matrix.toTranslationMatrix(-55, 5, 0);
     matrix2.toRotationMatrixY(90);
     matrix.multiply(matrix2);
 
@@ -184,9 +192,9 @@ SGNode *SGCity::getCity() {
 
     // right
     texture = new Texture("./textures/skyboxRightFlipped.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(skyboxmaterial, texture, 1, 1, 1);
 
-    matrix.toTranslationMatrix(55, 55, 0);
+    matrix.toTranslationMatrix(55, 5, 0);
     matrix2.toRotationMatrixY(90);
     matrix.multiply(matrix2);
     matrix2.toScalingMatrix(110,110,1);
@@ -205,9 +213,9 @@ SGNode *SGCity::getCity() {
 
     // top  
     texture = new Texture("./textures/skyboxTopFlipped.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(skyboxmaterial, texture, 1, 1, 1);
 
-    matrix.toTranslationMatrix(0, 110, 0);
+    matrix.toTranslationMatrix(0, 60, 0);
 
     matrix2.toRotationMatrixX(-90);
     matrix.multiply(matrix2);

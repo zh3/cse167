@@ -40,7 +40,11 @@ int main(int argc, char** argv) {
     Vector3 lookAt(0.0, 0.0, 0.0);
     Vector3 up(0.0, 1.0, 0.0);*/
 
-    srand(time(NULL));
+    int seed = time(NULL); // if no argument, random seed
+    if (argc > 1)
+      seed = atoi(argv[1]); // argument, or else 0 if invalid argument
+
+    srand(seed);
     
     Vector3 cam(0.0, 1.0, 15.0);
     Vector3 lookAt(0.0, 1.0, -15.0);
@@ -246,7 +250,7 @@ SGNode *getLight() {
 //    GLfloat pointlight_specular[] = {0.3, 0.3, 0.3, 1.0};
 //    GLfloat pointlight_position[] = { 0.0, 90.0, 5.0, 1.0 };
     
-    Vector4 ambient(0.3, 0.3, 0.3, 1.0);
+    Vector4 ambient(0.5, 0.5, 0.5, 1.0);
     Vector4 diffuse(1.0, 1.0, 1.0, 1.0);
     Vector4 specular(0.3, 0.3, 0.3, 1.0);
     Vector3 dir(0.0, -1.0, 0.0);
