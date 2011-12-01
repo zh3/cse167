@@ -39,14 +39,12 @@ void SGGrid::addChild(SGNode* child, int row, int col) {
     double xOffset = xInc / 2.0 + col * xInc - xSize / 2.0;
     double zOffset = zInc / 2.0 + row * zInc - zSize / 2.0;
     
-    cout << "x Offset is "<< xOffset << " z offset is: " << zOffset << endl;
-    
     transform.toTranslationMatrix(xOffset, 0.0, zOffset);
     SGMatrixTransform *translation = new SGMatrixTransform(transform);
     translation->addChild(child);
     
     SGGroup::addChild(translation);
-    //occupied[row][col] = true;
+    occupied[row][col] = true;
 }
 
 void SGGrid::draw(Matrix4 mat) {
@@ -56,6 +54,6 @@ void SGGrid::draw(Matrix4 mat) {
 }
 
 bool SGGrid::isOccupied(int row, int col) {
-    return false;
+    return occupied[row][col];
 }
 
