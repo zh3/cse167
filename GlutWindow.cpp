@@ -256,7 +256,7 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     GLfloat pointlight_ambient[] = {0.3, 0.3, 0.3, 1.0};
     GLfloat pointlight_diffuse[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat pointlight_specular[] = {0.3, 0.3, 0.3, 1.0};
-    GLfloat pointlight_position[] = { 0.0, 0.0, 5.0, 1.0 };
+    GLfloat pointlight_position[] = { 0.0, 90.0, 5.0, 1.0 };
     //GLfloat point
     glLightfv(GL_LIGHT0, GL_AMBIENT, pointlight_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, pointlight_diffuse);
