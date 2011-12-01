@@ -31,36 +31,14 @@ static double shininess = 50.0;
 static Material shinyGreen(sGAmbient, sGDiffuse, sGSpecular, shininess);
 
 static Vector4 dBAmbient(0.2, 0.06, 0.02, 1.0);
-static Vector4 dBDiffuse(0.8, 0.3, 0.1, 1.0);
+static Vector4 dBDiffuse(0.4, 0.15, 0.05, 1.0);
 static Vector4 dBSpecular(0.0, 0.0, 0.0, 1.0);
 static Material diffuseBrown(dBAmbient, dBDiffuse, dBSpecular, shininess);
 
-int main(int argc, char** argv) {
-/*    Vector3 cam(0.0, 5.0, 5.0);
-    Vector3 lookAt(0.0, 0.0, 0.0);
-    Vector3 up(0.0, 1.0, 0.0);*/
-
-    int seed = time(NULL); // if no argument, random seed
-    if (argc > 1)
-      seed = atoi(argv[1]); // argument, or else 0 if invalid argument
-
-    srand(seed);
-    
-    Vector3 cam(0.0, 1.0, 15.0);
-    Vector3 lookAt(0.0, 1.0, -15.0);
-    Vector3 up(0.0, 1.0, 0.0); 
-
-    string name("Procedural World");
-    GlutWindow::initializeWindow(512, 512, &argc, argv, name);
-
-    GlutWindow::setCamera(cam, lookAt, up);
-    GlutWindow::setSceneGraph(getSceneGraph());
-    GlutWindow::enterGlutMainLoop();
-
-    return 0;
-}
-
-
+static Vector4 sRAmbient(0.1, 0.0, 0.0, 1.0);
+static Vector4 sRDiffuse(1.0, 0.0, 0.0, 1.0);
+static Vector4 sRSpecular(1.0, 1.0, 1.0, 1.0);
+static Material shinyRed(sRAmbient, sRDiffuse, sRSpecular, shininess);
 
 SGNode *getWavyTree() {
     multimap<char, LSystemRule*> *rules = new multimap<char, LSystemRule*>();
@@ -263,6 +241,43 @@ SGNode *getLight() {
 //        Vector4 specular, Vector3 spotDir, double spotCutoff);
 }
 
+static const int GRID_ROWS = 10;
+static const int GRID_COLS = 10;
+static const int GRID_X_SIZE = 100.0;
+static const int GRID_Z_SIZE = 100.0;
+static const int NUM_GENERATORS = 7;
+typedef SGNode *(*GeneratorFunction)(void);
+static GeneratorFunction generatorFunctions[NUM_GENERATORS];
+
+void setGeneratorFunctions() {
+    generatorFunctions[0] = &getWavyTree;
+    generatorFunctions[1] = &getSpikyTree;
+    generatorFunctions[2] = &getStraightTree;
+    generatorFunctions[3] = &getWeed;
+    generatorFunctions[4] = &getTwistyTree;
+    generatorFunctions[5] = &getRegularLeafyTree;
+    generatorFunctions[6] = &getSpikyLeafyTree;
+}
+
+SGNode *getParkGrid() {
+    SGGrid *grid = new SGGrid(GRID_ROWS, GRID_COLS, GRID_X_SIZE, GRID_Z_SIZE);
+    
+    //grid->addChild(generatorFunctions[6](), 4, 4);
+    
+    for (int i = 0; i < NUM_GENERATORS; i++) {
+        grid->addChild(generatorFunctions[i](), i, i);
+    }
+    
+    for (int i = 0 ; i < GRID_ROWS; i++) {
+        for (int j = 0; j < GRID_COLS; j++) {
+            if (!grid->isOccupied(i, j)) {
+                grid->addChild(new SGSphere(shinyRed, 1.0), i, j);
+            }
+        }
+    }
+    return grid;
+}
+
 SGNode *getSceneGraph() {
     Vector4 ambient(0.0, 0.0, 0.2, 1.0);
     Vector4 diffuse(0.0, 0.0, 1.0, 1.0);
@@ -287,18 +302,38 @@ SGNode *getSceneGraph() {
     
     SGMatrixTransform *world = new SGMatrixTransform();
     world->addChild(new SGCity(shinyWhite, 100, 100));
-    SGGrid *grid = new SGGrid(10, 10, 100.0, 100.0);
-    for (int i = 0 ; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
-            if (i == 4 && j == 4) continue;
-            //grid->addChild(new SGSphere(shinyRed, 1.0), i, j);
-        }
-    }
     
-    grid->addChild(getSpikyLeafyTree(), 4, 4);
-    world->addChild(grid);
+    world->addChild(getParkGrid());
     world->addChild(getLight());
     
     return world;
+}
+
+int main(int argc, char** argv) {
+/*    Vector3 cam(0.0, 5.0, 5.0);
+    Vector3 lookAt(0.0, 0.0, 0.0);
+    Vector3 up(0.0, 1.0, 0.0);*/
+
+    int seed = time(NULL); // if no argument, random seed
+    if (argc > 1)
+      seed = atoi(argv[1]); // argument, or else 0 if invalid argument
+
+    srand(seed);
+    
+    setGeneratorFunctions();
+    
+    Vector3 cam(0.0, 1.0, 15.0);
+    Vector3 lookAt(0.0, 1.0, -15.0);
+    Vector3 up(0.0, 1.0, 0.0); 
+
+    string name("Procedural World");
+    
+    GlutWindow::initializeWindow(512, 512, &argc, argv, name);
+
+    GlutWindow::setSceneGraphFunction(getSceneGraph);
+    GlutWindow::setCamera(cam, lookAt, up);
+    GlutWindow::enterGlutMainLoop();
+
+    return 0;
 }
 

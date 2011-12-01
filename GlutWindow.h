@@ -15,6 +15,8 @@
 #include <vector>
 #include <string>
 
+typedef SGNode *(*SceneGraphFunction)(void);
+
 class GlutWindow {
 public:
     static int width, height;
@@ -26,7 +28,7 @@ public:
     static void initializeWindow(int newWidth, int newHeight, int *argc,
         char **argv, std::string &title);
     static void enterGlutMainLoop(void);
-    static void setSceneGraph(SGNode *newRoot);
+    static void setSceneGraphFunction(SceneGraphFunction sgFunction);
     static void setCamera(const Vector3 &cameraLoc, const Vector3 &lookAt, 
                           const Vector3 &upVec);
     static void keyboardCallback(unsigned char key, int, int);
@@ -46,6 +48,7 @@ private:
     static Vector3 up;
     static unsigned int framesDrawn;
     static struct timeval startTime;
+    static SceneGraphFunction sgFunction;
     
     static const unsigned int FRAMERATE_MEASURE_INTERVAL;
     static const double FOV;
@@ -57,6 +60,7 @@ private:
     static double getSphereX(int windowX);
     static double getSphereY(int windowY);
     static void camera();
+    static void rebuildSceneGraph();
 };
 
 #endif	/* GLUTWINDOW_H */

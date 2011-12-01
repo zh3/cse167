@@ -36,6 +36,8 @@ const double GlutWindow::FOV = 60.0;
 const double GlutWindow::Z_NEAR = 1.0;
 const double GlutWindow::Z_FAR = 200.0;
 
+SceneGraphFunction GlutWindow::sgFunction;
+
 float xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, angle=0.0;
 void GlutWindow::camera(void) {
     glRotatef(xrot,1.0,0.0,0.0);  //rotate our camera on the x-axis (left and right)
@@ -141,7 +143,9 @@ void GlutWindow::keyboardCallback(unsigned char key, int, int)
       keyboardMovement();
       break;
       
-      
+    case 'r':
+      rebuildSceneGraph();
+      break;
   }
 }
 
@@ -288,8 +292,9 @@ void GlutWindow::enterGlutMainLoop(void) {
     glutMainLoop();
 }
 
-void GlutWindow::setSceneGraph(SGNode* newRoot) {
-    root = newRoot;
+void GlutWindow::setSceneGraphFunction(SceneGraphFunction newSgFunction) {
+    sgFunction = newSgFunction;
+    root = sgFunction();
 }
 
 void GlutWindow::setCamera(const Vector3 &cameraLoc, const Vector3 &lookAt, 
@@ -297,4 +302,8 @@ void GlutWindow::setCamera(const Vector3 &cameraLoc, const Vector3 &lookAt,
     cameraLocation = cameraLoc;
     lookAtPoint = lookAt;
     up = upVec;
+}
+
+void GlutWindow::rebuildSceneGraph() {
+    root = sgFunction();
 }
