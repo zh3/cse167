@@ -104,7 +104,6 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
     //(textures[rand() % 4])->bindTexture();
 
 
-
     for (int i = 0; i < stories; i++)
     {
       houseTransform.toTranslationMatrix(0, stories/2 - i-.5, 0);
@@ -114,22 +113,22 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
       if (beams && i == stories - 1)
       {
         if (rand() % 2 == 0)
-          mainWalls = new SGTexturedCuboid(material, width-.2, 1, 1-.3, textures[1]);//texture);
+          mainWalls = new SGTexturedCuboid(material, width-.2, 1, 2-.3, textures[1]);//texture);
         else
-          mainWalls = new SGTexturedCuboid(material, width-.2, 1, 1-.3, textures[9]);//texture);
+          mainWalls = new SGTexturedCuboid(material, width-.2, 1, 2-.3, textures[9]);//texture);
       }
 
       else if (beams && i < stories - 1)
-        mainWalls = new SGTexturedCuboid(material, width, 1, 1, textures[9]);//texture);
+        mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[9]);//texture);
       else
-        mainWalls = new SGTexturedCuboid(material, width, 1, 1, textures[tex]);//texture);
+        mainWalls = new SGTexturedCuboid(material, width, 1, 2, textures[tex]);//texture);
 
 
       mainWallsTransform->addChild(mainWalls);
       house->addChild(mainWallsTransform);
     }
 
-    addRoof(house, width, stories, textures);
+    addRoof(house, width, stories, textures, tex);
     addWindows(house, width, stories, textures);
 
     if (rand() % 3 == 0)
@@ -175,7 +174,7 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories,
         {
           transform.toTranslationMatrix(j+.5 - width/2, i-.5 - stories/2, .05);
           windowTransform = new SGMatrixTransform(transform);
-          window = new SGTexturedCuboid(windowMat, windowWidth, windowHeight, 1, textures[windowTex]);
+          window = new SGTexturedCuboid(windowMat, windowWidth, windowHeight, 2, textures[windowTex]);
           windowTransform->addChild(window);
           house->addChild(windowTransform);
         }
@@ -183,7 +182,7 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories,
         {
           transform.toTranslationMatrix(j+.5 - width/2, i-.5 - stories/2 - .2, .05);
           windowTransform = new SGMatrixTransform(transform);
-          window = new SGTexturedCuboid(windowMat, .5, 1, 1, textures[doorTex]);
+          window = new SGTexturedCuboid(windowMat, .5, 1, 2, textures[doorTex]);
           windowTransform->addChild(window);
           house->addChild(windowTransform);
         }
@@ -270,7 +269,8 @@ void SGHouse::addSidewaysRoof(SGMatrixTransform *house, double width, double sto
 
 }
 
-void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Texture* textures[]) {
+void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Texture* textures[],
+  int innerRoofTex) {
     double roofHeight; // defines pitch of roof
     double angle; // stored in radians
     double roofWidth; // length of one side of roof
@@ -315,7 +315,7 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
 
     /* Left roof */
 
-    SGTexturedCuboid *leftRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1, 1.5, textures[tex]);
+    SGTexturedCuboid *leftRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1, 2.5, textures[tex]);
 
     // translate pivot to origin
     matrix.toTranslationMatrix((roofWidth/2 - width/2) - .3, .05, 0); 
@@ -334,7 +334,7 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     /* Right roof */
 
 
-    SGTexturedCuboid *rightRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1, 1.5, textures[tex]);
+    SGTexturedCuboid *rightRoof = new SGTexturedCuboid(redMaterial, roofWidth, .1, 2.5, textures[tex]);
     // translate pivot to origin
     matrix.toTranslationMatrix(-(roofWidth/2 - width/2) + .3, .05, 0); 
     // rotate
@@ -352,21 +352,27 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
     /* Inner triangle */
     
     // length of diagonal = width of roof
-    SGCuboid *midRoof = new SGCuboid(material, pow(.5*pow(width,2), .5), 
-      pow(.5*pow(width,2), .5), .99);
-  
+    SGTexturedCuboid *midRoof = new SGTexturedCuboid(material, pow(.5*pow(width,2), .5), 
+      pow(.5*pow(width,2), .5), 1.99, textures[innerRoofTex]);
+//    SGCuboid *midRoof = new SGCuboid(material, roofWidth-.7, roofWidth-.7, 1.99);
+
     matrix.toRotationMatrixZ(-45);
-    transform.toScalingMatrix(1, roofHeight/width, 1);//roofHeight / (.5 * width), 1);
     matrix2.toTranslationMatrix(0, stories-.5*stories, 0); 
-    
+
+    transform.toScalingMatrix(1, roofHeight*width*.5, 1);//roofHeight / (.5 * width), 1);
+
+
     // translate up, then rotate, then scale
     transform.multiply(matrix);
     matrix2.multiply(transform);
+    //matrix2.multiply(matrix);
+    //transform.multiply(matrix2);
 
     SGMatrixTransform *midRoofTransform = new SGMatrixTransform(matrix2);
     midRoofTransform->addChild(midRoof);
-
     house->addChild(midRoofTransform);
+
+
 
     house->addChild(leftRoofTransform);
     house->addChild(rightRoofTransform);
@@ -389,16 +395,16 @@ void SGHouse::addBeams(SGMatrixTransform *house, double width, double stories, T
     {
       for (int j = 0; j <= width; ++j)
       {
-        matrix.toTranslationMatrix(j - width/2, i-.5 - stories/2, .1);
+        matrix.toTranslationMatrix(j - width/2, i-.5 - stories/2, 1.05);
         beamTransform = new SGMatrixTransform(matrix);
-        beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .99, textures[8]);
+        beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[8]);
         beamTransform->addChild(beam);
         house->addChild(beamTransform);
       }
       // top beam
-      matrix.toTranslationMatrix(0, i - stories/2, 0);
+      matrix.toTranslationMatrix(0, i - stories/2, 1.05);
       beamTransform = new SGMatrixTransform(matrix);
-      beam = new SGTexturedCuboid(material, width, beamWidth, 1.1, textures[8]);
+      beam = new SGTexturedCuboid(material, width, beamWidth, .2, textures[8]);
       beamTransform->addChild(beam);
       house->addChild(beamTransform);
 
@@ -406,9 +412,9 @@ void SGHouse::addBeams(SGMatrixTransform *house, double width, double stories, T
     if (stories > 1)
     {
       // bottom beam
-      matrix.toTranslationMatrix(0, 1 - stories/2, 0);
+      matrix.toTranslationMatrix(0, 1 - stories/2, 1.05);
       beamTransform = new SGMatrixTransform(matrix);
-      beam = new SGTexturedCuboid(material, width, beamWidth, 1.1, textures[8]);
+      beam = new SGTexturedCuboid(material, width, beamWidth, .2, textures[8]);
       beamTransform->addChild(beam);
       house->addChild(beamTransform);
     }
@@ -426,9 +432,9 @@ void SGHouse::addChimney(SGMatrixTransform *house, double width, double stories,
                                                     chimneyWidth, textures[1]);
   
     if (onRight)
-      matrix.toTranslationMatrix(width/2 - chimneyWidth/2, stories/2, 0);
+      matrix.toTranslationMatrix(width/2 - chimneyWidth/2 - .1, stories/2, 0);
     else
-      matrix.toTranslationMatrix(-(width/2) + chimneyWidth/2, stories/2, 0);
+      matrix.toTranslationMatrix(-(width/2) + chimneyWidth/2 + .1, stories/2, 0);
     
     // translate up, then rotate, then scale
 
