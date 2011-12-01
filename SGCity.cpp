@@ -17,6 +17,7 @@
 #include <iostream>
 #include <math.h>
 #include "Texture.h"
+#include "SGTexturedPlane.h"
 using namespace std;
 
 SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeode(material) {
@@ -54,7 +55,7 @@ SGNode *SGCity::getCity() {
     Material material(ambient, diffuse, specular, shininess); 
 
     // set up city
-    Matrix4 cityTransform, blockTransform, blockTranslateMatrix;;
+    Matrix4 cityTransform, blockTransform, blockTranslateMatrix;
     cityTransform.toTranslationMatrix(0, 0, 0);
 
     SGMatrixTransform *city = new SGMatrixTransform(cityTransform);
@@ -92,12 +93,28 @@ SGNode *SGCity::getCity() {
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-   //  testing the 100x100 floor
+    // testing the 100x100 floor
     blockTransform.toScalingMatrix(100, 1, 100);
     SGCuboid *floor = new SGCuboid(material, 1, .00001, 1);
     block = new SGMatrixTransform(blockTransform);
     block->addChild(floor);
     city->addChild(block);
+
+    // skybox
+    Texture *texture;
+    SGTexturedPlane *plane;
+    SGMatrixTransform *transform;
+    Matrix4 matrix, matrix2;
+    
+    // front
+    texture = new Texture("./textures/skyboxFront.ppm");
+    plane = new SGTexturedPlane(material, texture, 100, 100, 1);
+    matrix.toTranslationMatrix(0, 75, -10);
+    matrix2.toRotationMatrixX(90);
+    matrix2.multiply(matrix);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
 
     return city;
 }

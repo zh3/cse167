@@ -159,8 +159,7 @@ void GlutWindow::keyboardMovement()
     ypos -= float(sin(xrotrad)) ;
   }
   if (aPressed)
-  {
-    yrot -= 1;
+  { yrot -= 1;
     if (yrot < -360)yrot += 360;
   }
   if (sPressed)
