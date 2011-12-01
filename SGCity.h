@@ -23,7 +23,7 @@ private:
     double seed;
     double blockWidth;
 
-    Texture *textures[11];
+    Texture *textures[12];
 
     SGNode *city;
     

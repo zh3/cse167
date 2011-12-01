@@ -33,8 +33,12 @@ SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeo
   textures[6] = new Texture("./textures/roof3.ppm");
   textures[7] = new Texture("./textures/roof4.ppm");
   textures[8] = new Texture("./textures/brick1.ppm");
-  textures[9] = new Texture("./textures/brick2.ppm");
-  textures[10] = new Texture("./textures/plaster.ppm");
+  textures[9] = new Texture("./textures/plaster.ppm");
+  textures[10] = new Texture("./textures/door1.ppm");
+  textures[11] = new Texture("./textures/door2.ppm");
+ // textures[12] = new Texture("./textures/door2.ppm");
+//  textures[13] = new Texture("./textures/door3.ppm");
+//  textures[14] = new Texture("./textures/wall3.ppm");
 
   city = getCity();
 }
@@ -101,7 +105,7 @@ SGNode *SGCity::getCity() {
 
     // floor
     texture = new Texture("./textures/grass.ppm");
-    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+    plane = new SGTexturedPlane(material, texture, 1, 1, 10);
     
     matrix.toRotationMatrixX(-90);
     matrix2.toScalingMatrix(100,100,4);

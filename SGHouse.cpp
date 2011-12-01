@@ -103,6 +103,8 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
     int tex = rand() % 4;
     //(textures[rand() % 4])->bindTexture();
 
+
+
     for (int i = 0; i < stories; i++)
     {
       houseTransform.toTranslationMatrix(0, stories/2 - i-.5, 0);
@@ -117,10 +119,8 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
       house->addChild(mainWallsTransform);
     }
 
-
-
     addRoof(house, width, stories, textures);
-    addWindows(house, width, stories);
+    addWindows(house, width, stories, textures);
 
     if (rand() % 3 == 0)
       addChimney(house, width, stories);
@@ -135,8 +135,8 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
     return house;
 }
 
-void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories) {
-    SGCuboid *window;
+void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories, Texture *textures[]) {
+    SGTexturedCuboid *window;
     SGMatrixTransform *windowTransform;
     Matrix4 transform;
     double windowWidth, windowHeight;
@@ -159,6 +159,8 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories)
     int wid = (int)width;
     doorPosition = rand() % wid;
 
+    int doorTex = rand() % 2 + 10; // door textures are 10,11
+
     // create windows, top to bottom, left to right
     for (int i = stories; i > 0; --i)
     {
@@ -168,7 +170,7 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories)
         {
           transform.toTranslationMatrix(j+.5 - width/2, i-.5 - stories/2, .25);
           windowTransform = new SGMatrixTransform(transform);
-          window = new SGCuboid(windowMat, windowWidth, windowHeight, 1);
+          window = new SGTexturedCuboid(windowMat, windowWidth, windowHeight, 1, textures[doorTex]);
           windowTransform->addChild(window);
           house->addChild(windowTransform);
         }
@@ -176,7 +178,7 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories)
         {
           transform.toTranslationMatrix(j+.5 - width/2, i-.5 - stories/2 - .2, .25);
           windowTransform = new SGMatrixTransform(transform);
-          window = new SGCuboid(windowMat, .5, 1, 1);
+          window = new SGTexturedCuboid(windowMat, .5, 1, 1, textures[doorTex]);
           windowTransform->addChild(window);
           house->addChild(windowTransform);
         }
