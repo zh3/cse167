@@ -93,12 +93,15 @@ SGNode *SGCity::getCity() {
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    // testing the 100x100 floor
-    blockTransform.toScalingMatrix(100, 1, 100);
-    SGCuboid *floor = new SGCuboid(material, 1, .00001, 1);
-    block = new SGMatrixTransform(blockTransform);
-    block->addChild(floor);
-    city->addChild(block);
+    Texture *t = new Texture("grass.ppm");
+    Matrix4 floorTransformMatrix;
+    floorTransformMatrix.toRotationMatrixX(-90.0);
+    SGMatrixTransform *floorTransform 
+            = new SGMatrixTransform(floorTransformMatrix);
+    SGNode *floor = new SGTexturedPlane(material, t, 100, 100, 2);
+    floorTransform->addChild(floor);
+    
+    city->addChild(floorTransform);
 
     // skybox
     Texture *texture;
