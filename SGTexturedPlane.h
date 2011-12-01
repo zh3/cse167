@@ -23,6 +23,7 @@ private:
     int resolution;
     Texture *texture;
     Vector3 **vertices;
+    Vector3 **textureCoordinates;
     
     void generateVertices();
     int getNumVertices();

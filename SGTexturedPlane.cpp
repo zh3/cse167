@@ -13,7 +13,8 @@ SGTexturedPlane::SGTexturedPlane(const Material &material, Texture *newTexture,
           xSize(newXSize), ySize(newYSize),
           resolution(newResolution),
           texture(newTexture), 
-          vertices(new Vector3*[getNumVertices()]) {
+          vertices(new Vector3*[getNumVertices()]),
+          textureCoordinates(new Vector3*[getNumVertices()]){
     generateVertices();
 }
 
@@ -23,6 +24,12 @@ SGTexturedPlane::~SGTexturedPlane() {
     }
     
     delete [] vertices;
+    
+    for (int i = 0; i < getNumVertices(); i++) {
+        delete textureCoordinates[i];
+    }
+    
+    delete [] textureCoordinates;
 }
 
 #include <iostream>
@@ -39,15 +46,10 @@ void SGTexturedPlane::draw(Matrix4 mat) {
     material.apply();
     glBegin(GL_QUADS);
     
-    Vector3 textureCoordinates;
     for (int i = 0; i < getNumVertices(); i++) {
         glNormal(normal);
         
-        textureCoordinates = *vertices[i];
-        textureCoordinates.x = (textureCoordinates.x / xSize) * resolution;
-        textureCoordinates.y = (textureCoordinates.y / ySize) * resolution;
-        
-        glTexture(textureCoordinates);
+        glTexture(textureCoordinates[i]);
         glVertex(vertices[i]);
     }
     glEnd();
@@ -65,15 +67,34 @@ void SGTexturedPlane::generateVertices() {
     int vertexPtr = 0;
     for (int i = 0; i < resolution; i++) {
         for (int j = 0; j < resolution; j++) {
+            textureCoordinates[vertexPtr] 
+                = new Vector3(i * xInc, j * yInc, 0.0);
             vertices[vertexPtr++] 
                 = new Vector3(i * xInc + xOffset, j * yInc + yOffset, 0.0);
+            
+            textureCoordinates[vertexPtr] 
+                = new Vector3(i * xInc, (j + 1) * yInc, 0.0);
             vertices[vertexPtr++] 
                 = new Vector3(i * xInc + xOffset, (j + 1) * yInc + yOffset, 0.0);
+            
+            textureCoordinates[vertexPtr] 
+                = new Vector3((i + 1) * xInc, (j + 1) * yInc, 0.0);
             vertices[vertexPtr++] 
                 = new Vector3((i + 1) * xInc + xOffset, (j + 1) * yInc + yOffset, 0.0);
+            
+            textureCoordinates[vertexPtr] 
+                = new Vector3((i + 1) * xInc, j * yInc, 0.0);
             vertices[vertexPtr++] 
                 = new Vector3((i + 1) * xInc + xOffset, j * yInc + yOffset, 0.0);
         }
+    }
+    
+    Vector3 *textureCoordinate;
+    for (int i = 0; i < getNumVertices(); i++) {
+        textureCoordinate = textureCoordinates[i];
+        
+        textureCoordinate->x = (textureCoordinate->x / xSize) * resolution;
+        textureCoordinate->y = (textureCoordinate->y / ySize) * resolution;
     }
 }
 
