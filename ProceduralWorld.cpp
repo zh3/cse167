@@ -24,6 +24,8 @@ int main(int argc, char** argv) {
     Vector3 lookAt(0.0, 0.0, 0.0);
     Vector3 up(0.0, 1.0, 0.0);*/
 
+    srand(time(NULL));
+    
     Vector3 cam(0.0, 5.0, 15.0);
     Vector3 lookAt(0.0, 5.0, -15.0);
     Vector3 up(0.0, 1.0, 0.0); 
@@ -36,29 +38,6 @@ int main(int argc, char** argv) {
     GlutWindow::enterGlutMainLoop();
 
     return 0;
-}
-
-SGNode *getTiledRobot(Material &limbMaterial, Material &bodyMaterial, 
-                      Material &headMaterial, Material &tileMaterial) {
-    Matrix4 mat;
-    mat.toTranslationMatrix(0.0, -ROBOT_HEIGHT / 2.0, 0.0);
-    
-    SGRobot *tileRobot = new SGRobot(limbMaterial, bodyMaterial, headMaterial, 
-            ROBOT_HEIGHT);
-    
-    SGCuboid *tile = new SGCuboid(tileMaterial, TILE_SIZE, TILE_HEIGHT, TILE_SIZE);
-    SGMatrixTransform *tileTransform = new SGMatrixTransform(mat);
-    tileTransform->addChild(tile);
-    
-    mat.toIdentity();
-    SGMatrixTransform *tileBot = new SGMatrixTransform(mat);
-    tileBot->addChild(tileTransform);
-    tileBot->addChild(tileRobot);
-    
-    srand(time(NULL));
-    SGCity *city = new SGCity(limbMaterial, 100, 100);
-    tileBot->addChild(city);
-    return tileBot;
 }
 
 SGNode *getSceneGraph() {
@@ -83,6 +62,6 @@ SGNode *getSceneGraph() {
     specular.set(1.0, 1.0, 1.0, 1.0);
     Material shinyRed(ambient, diffuse, specular, shininess);
     
-    return getTiledRobot(shinyWhite, shinyRed, shinyBlue, diffuseGreen);
+    return new SGCity(shinyWhite, 100, 100);
 }
 
