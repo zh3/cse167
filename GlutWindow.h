@@ -56,6 +56,7 @@ private:
     static void trackballDoRotation(Vector3 newLocation);
     static double getSphereX(int windowX);
     static double getSphereY(int windowY);
+    static void camera();
 };
 
 #endif	/* GLUTWINDOW_H */

@@ -28,16 +28,24 @@ SGNode *GlutWindow::root;
 unsigned int GlutWindow::framesDrawn = 0;
 struct timeval GlutWindow::startTime;
 Vector3 direction(0,0,10);
-bool wPressed = false, aPressed = false, sPressed = false, dPressed = false;
+bool wPressed = false, aPressed = false, sPressed = false, dPressed = false,
+zPressed = false, qPressed = false;
 
 const unsigned int GlutWindow::FRAMERATE_MEASURE_INTERVAL = 100;
 const double GlutWindow::FOV = 60.0;
 const double GlutWindow::Z_NEAR = 1.0;
-const double GlutWindow::Z_FAR = 500.0;
+const double GlutWindow::Z_FAR = 200.0;
+
+float xpos = 0, ypos = 0, zpos = 0, xrot = 0, yrot = 0, angle=0.0;
+void GlutWindow::camera(void) {
+    glRotatef(xrot,1.0,0.0,0.0);  //rotate our camera on the x-axis (left and right)
+    glRotatef(yrot,0.0,1.0,0.0);  //rotate our camera on the y-axis (up and down)
+    glTranslated(-xpos,-ypos,-zpos); //translate the screen to the position of our camera
+}
 
 void GlutWindow::idleCallback(void) {
 
-    if (wPressed || aPressed || sPressed || dPressed) 
+    if (wPressed || aPressed || sPressed || dPressed || qPressed || zPressed) 
       keyboardMovement();
 
     displayCallback();
@@ -64,6 +72,8 @@ void GlutWindow::reshapeCallback(int newWidth, int newHeight) {
 }
 
 void GlutWindow::displayCallback(void) {
+     
+    
     if (framesDrawn >= FRAMERATE_MEASURE_INTERVAL) {
         double secsPassed;
         double frameRate;
@@ -85,26 +95,16 @@ void GlutWindow::displayCallback(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
 
+    glLoadIdentity();  
+    camera();
+    
     root->draw(identity);
 
     glFlush();
     glutSwapBuffers();
     
+    angle++; //increase the angle
     framesDrawn++;
-}
-
-void GlutWindow::motionCallback(int x, int y) {
-    Vector3 tC(getTrackballCoordinates(x, y));
-    trackballDoRotation(tC);
-    prevLocation = tC;
-}
-
-void GlutWindow::mouseCallback(int button, int state, int x, int y) {
-    Vector3 tC(getTrackballCoordinates(x, y));
-
-    if (state == GLUT_DOWN) {
-        prevLocation = tC;
-    }
 }
 
 void GlutWindow::keyboardCallback(unsigned char key, int, int)
@@ -130,38 +130,67 @@ void GlutWindow::keyboardCallback(unsigned char key, int, int)
       dPressed = true;
       keyboardMovement();
       break;
+      
+      case 'z':
+      zPressed = true;
+      keyboardMovement();
+      break;
+      
+      case 'q':
+      qPressed = true;
+      keyboardMovement();
+      break;
+      
+      
   }
 }
 
 void GlutWindow::keyboardMovement()
 {
-  Matrix4 matrix;
-
   glMatrixMode(GL_MODELVIEW);
   direction.normalize();
   if (wPressed)
   {
-    matrix.toTranslationMatrix(-direction[0], 0, -direction[2]);
-    glMultMatrixd(matrix.getPointer());
-    GlutWindow::displayCallback();
+    float xrotrad, yrotrad;
+    yrotrad = (yrot / 180 * 3.141592654f);
+    xrotrad = (xrot / 180 * 3.141592654f);
+    xpos += float(sin(yrotrad)) ;
+    zpos -= float(cos(yrotrad)) ;
+    ypos -= float(sin(xrotrad)) ;
   }
   if (aPressed)
-  {
-    matrix.toTranslationMatrix(-direction[2], 0, -direction[0]);
-    glMultMatrixd(matrix.getPointer());
+  { yrot -= 1;
+    if (yrot < -360)yrot += 360;
   }
   if (sPressed)
   {
-    matrix.toTranslationMatrix(direction[0], 0, direction[2]);
-    glMultMatrixd(matrix.getPointer());
+    float xrotrad, yrotrad;
+    yrotrad = (yrot / 180 * 3.141592654f);
+    xrotrad = (xrot / 180 * 3.141592654f);
+    xpos -= float(sin(yrotrad));
+    zpos += float(cos(yrotrad)) ;
+    ypos += float(sin(xrotrad));
   }
   if (dPressed)
   {
-    matrix.toTranslationMatrix(direction[2], 0, direction[0]);
-    glMultMatrixd(matrix.getPointer());
+    yrot += 1;
+    if (yrot >360) yrot -= 360;
   }
+  
+  if (zPressed) {
+    xrot += 1;
+    if (xrot >360) xrot -= 360;
+  }
+  
+  if (qPressed) {
+    xrot -= 1;
+    if (xrot < -360) xrot += 360;
+  }
+  
   GlutWindow::displayCallback();
 }
+
+
 
 void GlutWindow::keyboardUpCallback(unsigned char key, int, int) {
   switch (key)
@@ -180,6 +209,14 @@ void GlutWindow::keyboardUpCallback(unsigned char key, int, int) {
 
     case 'd':
       dPressed = false;
+      break;
+      
+    case 'z':
+      zPressed = false;
+      break;
+      
+    case 'q':
+      qPressed = false;
       break;
   }
 }
@@ -239,74 +276,12 @@ void GlutWindow::initializeWindow(int newWidth, int newHeight, int *argc,
     glutDisplayFunc(GlutWindow::displayCallback);
     glutReshapeFunc(GlutWindow::reshapeCallback);
     glutIdleFunc(GlutWindow::idleCallback);
-    glutPassiveMotionFunc(GlutWindow::motionCallback);
-    glutMouseFunc(GlutWindow::mouseCallback);
     glutKeyboardFunc(GlutWindow::keyboardCallback);
     glutKeyboardUpFunc(GlutWindow::keyboardUpCallback);
 }
 
 void GlutWindow::enterGlutMainLoop(void) {
     glutMainLoop();
-}
-
-// Get the coordinates of the mouse on the virtual trackball sphere, assuming
-// the trackball is a sphere of radius 1.
-Vector3 GlutWindow::getTrackballCoordinates(int windowX, int windowY) {
-    double sX = getSphereX(windowX);
-    double sY = getSphereY(windowY);
-
-    // get z coordinate using fact sqrt(x^2 + y^2 + z^2) = 1 for a sphere of
-    // radius 1.
-    double z2 = 1.0 - sX * sX - sY * sY;
-    double sZ = (z2 > 0) ? sqrt(z2) : 0;
-
-    Vector3 vec(sX, sY, sZ);
-    vec.normalize();
-    return vec;
-}
-
-void GlutWindow::trackballDoRotation(Vector3 newLocation) {
-    Vector3 rotationAxis;
-    // Angle of rotation in degrees
-    double degAngle;
-    Matrix4 rotationMatrix;
-
-    rotationAxis.cross(prevLocation, newLocation);
-
-    //rotationAxis.normalize();
-    degAngle = acos(prevLocation.dot(newLocation)) * 180.0;
-    degAngle /= 100;
-    
-    // needed for passive mouse motion - gives funky degree at startup
-    if (isnan(degAngle))
-      degAngle = .1;
-
-    rotationMatrix.toRotationMatrix(-degAngle, rotationAxis);
-    rotationMatrix.multiply(trackballRotation);
-    trackballRotation = rotationMatrix;
-    glMatrixMode(GL_MODELVIEW);
-//    glLoadMatrixd(trackballRotation.getPointer());
-    glMultMatrixd(trackballRotation.getPointer());
-    
-    direction = rotationMatrix.multiply(direction);
-}
-
-// map the x coordinate of the mouse location on the window to the X coordinate
-// on the virtual sphereical trackball
-double GlutWindow::getSphereX(int windowX) {
-    // Scale bounds to [0, 2]
-    double sX = (double) windowX / ((double) width / 2.0);
-    // translate (0,0) to the centre
-    return sX - 1;
-}
-
-// map the x coordinate of the mouse location on the window to the X coordinate
-// on the virtual sphereical trackball
-double GlutWindow::getSphereY(int windowY) {
-    // Scale bounds to [0, 2]
-    double sY = (double) windowY / ((double) height / 2.0);
-    // Flip +Y to be up instead of down
-    return 1.0 - sY;
 }
 
 void GlutWindow::setSceneGraph(SGNode* newRoot) {
