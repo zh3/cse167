@@ -33,7 +33,7 @@ SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeo
   textures[6] = new Texture("./textures/brick2.ppm");
   textures[7] = new Texture("./textures/roof4.ppm");
 
-  textures[8] = new Texture("./textures/brick1.ppm");
+  textures[8] = new Texture("./textures/beam.ppm");
   textures[9] = new Texture("./textures/plaster.ppm");
   textures[10] = new Texture("./textures/door4.ppm");
   textures[11] = new Texture("./textures/window2.ppm");

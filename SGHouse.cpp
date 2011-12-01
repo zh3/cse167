@@ -71,10 +71,13 @@ SGNode *SGHouse::getHouse(Texture *textures[]) {
       width = width - 1;
 
     double stories = (rand() % 4);
-    if (stories == 0)
+    if (stories == 0) 
       stories = 1;
     if (stories == 1 && width == 1) // prevent 1x1 houses
       stories = 2;
+
+    if (width < 4 && rand() % 5 == 0) // add in some tall houses
+      stories += 2;
 
     double height = stories;
 
@@ -426,32 +429,60 @@ void SGHouse::addBeams(SGMatrixTransform *house, double width, double stories, T
     
     for (int i = stories; i > 1; --i)
     {
-      for (int j = 0; j <= width; ++j)
+      for (int j = 1; j < width; ++j)
       {
-        matrix.toTranslationMatrix(j - width/2, i-.5 - stories/2, 1.05);
+        matrix.toTranslationMatrix(j - width/2, i-.5 - stories/2, 0);
         beamTransform = new SGMatrixTransform(matrix);
-        beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[8]);
+        beam = new SGTexturedCuboid(material, beamWidth, storyHeight, 2.2, textures[10]);
         beamTransform->addChild(beam);
         house->addChild(beamTransform);
       }
       // top beam
-      matrix.toTranslationMatrix(0, i - stories/2, 1.05);
+      matrix.toTranslationMatrix(0, i - stories/2, 0);
       beamTransform = new SGMatrixTransform(matrix);
-      beam = new SGTexturedCuboid(material, width, beamWidth, .2, textures[8]);
+      beam = new SGTexturedCuboid(material, width+.1, beamWidth, 2.2, textures[10]);
       beamTransform->addChild(beam);
       house->addChild(beamTransform);
+
+      // left front corner beam
+      matrix.toTranslationMatrix(0 - width/2, i-.5 - stories/2, 1);
+      beamTransform = new SGMatrixTransform(matrix);
+      beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[10]);
+      beamTransform->addChild(beam);
+      house->addChild(beamTransform);
+
+      // right front corner beam
+      matrix.toTranslationMatrix(width - width/2, i-.5 - stories/2, 1);
+      beamTransform = new SGMatrixTransform(matrix);
+      beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[10]);
+      beamTransform->addChild(beam);
+      house->addChild(beamTransform);
+      
+      // left back corner beam
+      matrix.toTranslationMatrix(0 - width/2, i-.5 - stories/2, -1);
+      beamTransform = new SGMatrixTransform(matrix);
+      beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[10]);
+      beamTransform->addChild(beam);
+      house->addChild(beamTransform);
+
+      // right back corner beam
+      matrix.toTranslationMatrix(width - width/2, i-.5 - stories/2, -1);
+      beamTransform = new SGMatrixTransform(matrix);
+      beam = new SGTexturedCuboid(material, beamWidth, storyHeight, .2, textures[10]);
+      beamTransform->addChild(beam);
+      house->addChild(beamTransform);
+      
 
     }
     if (stories > 1)
     {
       // bottom beam
-      matrix.toTranslationMatrix(0, 1 - stories/2, 1.05);
+      matrix.toTranslationMatrix(0, 1 - stories/2, 0);
       beamTransform = new SGMatrixTransform(matrix);
-      beam = new SGTexturedCuboid(material, width, beamWidth, .2, textures[8]);
+      beam = new SGTexturedCuboid(material, width+.1, beamWidth, 2.2, textures[10]);
       beamTransform->addChild(beam);
       house->addChild(beamTransform);
     }
-
 
 }
 
@@ -459,7 +490,12 @@ void SGHouse::addChimney(SGMatrixTransform *house, double width, double stories,
     bool onRight = rand() % 2; 
     Matrix4 matrix;
     double chimneyWidth = .5;
-    double chimneyHeight = stories + (rand()%10 / 8);
+
+    double chimneyHeight = stories + (double)(rand()%10)/10;
+    if (chimneyHeight - stories < .2)
+      chimneyHeight += .4;
+    if (chimneyHeight - stories > .9)
+      chimneyHeight -= .3;
 
     SGTexturedCuboid *chimney= new SGTexturedCuboid(material, chimneyWidth, chimneyHeight,
                                                     chimneyWidth, textures[1]);
