@@ -28,13 +28,13 @@ SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeo
   textures[1] = new Texture("./textures/wall2.ppm");
   textures[2] = new Texture("./textures/wall3.ppm");
   textures[3] = new Texture("./textures/wall4.ppm");
-  textures[4] = new Texture("./textures/wall1.ppm");
-  textures[5] = new Texture("./textures/wall2.ppm");
-  textures[6] = new Texture("./textures/wall3.ppm");
-  textures[7] = new Texture("./textures/wall4.ppm");
-  textures[8] = new Texture("./textures/wall1.ppm");
-  textures[9] = new Texture("./textures/wall2.ppm");
-  textures[10] = new Texture("./textures/wall3.ppm");
+  textures[4] = new Texture("./textures/roof1.ppm");
+  textures[5] = new Texture("./textures/roof2.ppm");
+  textures[6] = new Texture("./textures/roof3.ppm");
+  textures[7] = new Texture("./textures/roof4.ppm");
+  textures[8] = new Texture("./textures/brick1.ppm");
+  textures[9] = new Texture("./textures/brick2.ppm");
+  textures[10] = new Texture("./textures/plaster.ppm");
 
   city = getCity();
 }
@@ -98,7 +98,7 @@ SGNode *SGCity::getCity() {
     floorTransformMatrix.toRotationMatrixX(-90.0);
     SGMatrixTransform *floorTransform 
             = new SGMatrixTransform(floorTransformMatrix);
-    SGNode *floor = new SGTexturedPlane(material, t, 100, 100, 2);
+    SGNode *floor = new SGTexturedPlane(material, t, 100, 100, 50);
     floorTransform->addChild(floor);
     
     city->addChild(floorTransform);
@@ -110,7 +110,7 @@ SGNode *SGCity::getCity() {
     Matrix4 matrix, matrix2;
 
     // floor
-    texture = new Texture("./textures/wall3.ppm");
+   /*j texture = new Texture("./textures/wall3.ppm");
     plane = new SGTexturedPlane(material, texture, 1, 1, 1);
     
     matrix.toRotationMatrixX(90);
@@ -119,7 +119,7 @@ SGNode *SGCity::getCity() {
     transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
     city->addChild(transform);
-
+*/
     
     // front
     texture = new Texture("./textures/skyboxFront.ppm");
@@ -128,7 +128,25 @@ SGNode *SGCity::getCity() {
     matrix.toTranslationMatrix(0, 50, -50);
     matrix2.toScalingMatrix(100,100,1);
     matrix.multiply(matrix2);
+    matrix2.toRotationMatrixZ(180);
+    matrix.multiply(matrix2);
+    matrix2.toRotationMatrixY(-180);
+    matrix.multiply(matrix2);
+
     transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
+
+    // back
+    texture = new Texture("./textures/skyboxBack.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+
+    matrix.toTranslationMatrix(0, 50, 50);
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+    matrix2.toRotationMatrixZ(180);
+    matrix.multiply(matrix2);
+        transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
     city->addChild(transform);
 
@@ -140,6 +158,8 @@ SGNode *SGCity::getCity() {
     matrix2.toRotationMatrixY(90);
     matrix.multiply(matrix2);
     matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+    matrix2.toRotationMatrixX(180);
     matrix.multiply(matrix2);
     transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
@@ -154,9 +174,35 @@ SGNode *SGCity::getCity() {
     matrix.multiply(matrix2);
     matrix2.toScalingMatrix(100,100,1);
     matrix.multiply(matrix2);
+    matrix2.toRotationMatrixX(180);
+    matrix.multiply(matrix2);
+    matrix2.toRotationMatrixY(-180);
+    matrix.multiply(matrix2);
+
     transform = new SGMatrixTransform(matrix);
     transform->addChild(plane);
     city->addChild(transform);
+
+    // top  
+    texture = new Texture("./textures/skyboxTop.ppm");
+    plane = new SGTexturedPlane(material, texture, 1, 1, 1);
+
+    matrix.toTranslationMatrix(0, 100, 0);
+
+    matrix2.toRotationMatrixX(90);
+    matrix.multiply(matrix2);
+
+    matrix2.toScalingMatrix(100,100,1);
+    matrix.multiply(matrix2);
+
+    matrix2.toRotationMatrixX(180);
+    matrix.multiply(matrix2);
+
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(plane);
+    city->addChild(transform);
+
 
 
     city->addChild(block);
