@@ -8,7 +8,7 @@
 #include "SGCylinder.h"
 #include "BasicMath.h"
 
-const GLint SGCylinder::nSegments = 8;
+const GLint SGCylinder::nSegments = 18;
 using namespace std;
 
 SGCylinder::SGCylinder(const Material &material, GLdouble newRadius, 

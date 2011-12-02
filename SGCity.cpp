@@ -19,6 +19,10 @@
 #include "Texture.h"
 #include "SGTexturedPlane.h"
 #include "SGTexturedCuboid.h"
+#include "SGLSystem.h"
+#include "DrawSegmentAction.h"
+#include "DrawSegmentMaterialAction.h"
+
 using namespace std;
 
 SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeode(material) {
@@ -350,11 +354,95 @@ SGNode *SGCity::getCity() {
     transform->addChild(wall);
     city->addChild(transform);
 
-
-
-
+    block = getFountain();
+    city->addChild(block);
 
     return city;
+}
+
+SGMatrixTransform *SGCity::getFountain()
+{
+  SGCylinder *cylinder;
+  Matrix4 matrix, matrix2;
+  SGMatrixTransform *transform, *fountain;
+  matrix.toIdentity();
+  fountain = new SGMatrixTransform(matrix);
+
+  // base
+  cylinder = new SGCylinder(material, 3, 1.5);
+  matrix.toTranslationMatrix(0,0,0);
+  
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cylinder);
+  fountain->addChild(transform);
+
+  // center pole
+  cylinder = new SGCylinder(material, .2, 9);
+  matrix.toTranslationMatrix(0,0,0);
+  
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cylinder);
+  fountain->addChild(transform);
+
+  // middle
+  cylinder = new SGCylinder(material, 2, .5);
+  matrix.toTranslationMatrix(0,2.25,0);
+  
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cylinder);
+  fountain->addChild(transform);
+
+  // top
+  cylinder = new SGCylinder(material, 1, .5);
+  matrix.toTranslationMatrix(0,4,0);
+  
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cylinder);
+  fountain->addChild(transform);
+
+  SGNode *water = getWater();
+  matrix.toTranslationMatrix(0,4,0);
+  matrix2.toScalingMatrix(1,1,1);
+  matrix.multiply(matrix2);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(water);
+  fountain->addChild(transform);
+
+  return fountain;
+}
+
+SGNode *SGCity::getWater()
+{
+    Vector4 ambient(0.0, 0.0, 0.2, 1.0);
+    Vector4 diffuse(0.0, 0.0, 1.0, 1.0);
+    Vector4 specular(1.0, 1.0, 1.0, 1.0);
+    double shininess = 50.0;
+    Material shinyBlue(ambient, diffuse, specular, shininess); 
+
+    multimap<char, LSystemRule*> *rules = new multimap<char, LSystemRule*>();
+    map<char, TurtleAction*> *variableActions = new map<char, TurtleAction*>();
+    string base("F");
+    string ruleF1("F[+&<F+&<F-<&F][>>F]");
+    rules->insert(pair<char, LSystemRule*>('F', new LSystemRule(ruleF1, .7)));
+
+    string ruleF2(">>F[>>&F][>>&F][>>&F][>>>>&F]");
+    rules->insert(pair<char, LSystemRule*>('F', new LSystemRule(ruleF2, 1)));
+
+    string ruleF3(">>&FGA");
+    rules->insert(pair<char, LSystemRule*>('F', new LSystemRule(ruleF3, 0.54)));
+
+    string ruleA("A");
+    rules->insert(pair<char, LSystemRule*>('A', new LSystemRule(ruleA, 1.0)));
+    
+    string ruleG("G");
+    rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
+    
+    (*variableActions)['F'] = new DrawSegmentAction(0.4);
+    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyBlue, 0.1);
+    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyBlue, 0.1);
+    
+    return new SGLSystem(shinyBlue, base, rules, variableActions, 25, 3);
+
 }
 
 SGMatrixTransform *SGCity::getBlock(double blockWidth)
