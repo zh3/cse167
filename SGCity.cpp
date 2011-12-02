@@ -409,8 +409,8 @@ SGNode *SGCity::getCity() {
 
 SGMatrixTransform *SGCity::getFountain()
 {
-  Vector4 ambient(0.2, 0.2, 0.2, 1.0);
-  Vector4 diffuse(0.2, 0.2, 0.2, 1.0);
+  Vector4 ambient(0.5, 0.5, 0.5, 1.0);
+  Vector4 diffuse(0.5, 0.5, 0.5, 1.0);
   Vector4 specular(.2, .2, .2, 1.0);
   double shininess = 1.0;
   Material fountainMat(ambient, diffuse, specular, shininess); 
@@ -466,8 +466,8 @@ SGMatrixTransform *SGCity::getFountain()
 
 SGMatrixTransform *SGCity::getBench()
 {
-  Vector4 ambient(0.5, 0.2, 0.1, 1.0);
-  Vector4 diffuse(0.5, 0.2, 0.1, 1.0);
+  Vector4 ambient(0.5, 0.5, 0.5, 1.0);
+  Vector4 diffuse(0.5, 0.5, 0.5, 1.0);
   Vector4 specular(.5, .5, .5, 1.0);
   double shininess = 50.0;
   Material benchMat(ambient, diffuse, specular, shininess); 
@@ -523,8 +523,8 @@ SGMatrixTransform *SGCity::getBench()
 
 SGNode *SGCity::getWater()
 {
-    Vector4 ambient(0.0, 0.0, 0.2, 1.0);
-    Vector4 diffuse(0.0, 0.0, 1.0, 1.0);
+    Vector4 ambient(0.2, 0.2, 0.8, 1.0);
+    Vector4 diffuse(0.2, 0.2, 1.0, 1.0);
     Vector4 specular(1.0, 1.0, 1.0, 1.0);
     double shininess = 50.0;
     Material shinyBlue(ambient, diffuse, specular, shininess); 
