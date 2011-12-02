@@ -1,4 +1,4 @@
-
+#include <string.h>
 #include <cstdlib>
 #include <string>
 #include <math.h>
@@ -36,6 +36,11 @@ static Vector4 dBDiffuse(0.4, 0.15, 0.05, 1.0);
 static Vector4 dBSpecular(0.0, 0.0, 0.0, 1.0);
 static Material diffuseBrown(dBAmbient, dBDiffuse, dBSpecular, shininess);
 
+static Vector4 silverAmbient(0.1, 0.1, 0.1, 1.0);
+static Vector4 silverDiffuse(0.8, 0.8, 0.8, 1.0);
+static Vector4 silverSpecular(0.0, 0.0, 0.0, 1.0);
+static Material silver(silverAmbient, silverDiffuse, silverSpecular, shininess);
+
 static Vector4 sRAmbient(0.1, 0.0, 0.0, 1.0);
 static Vector4 sRDiffuse(1.0, 0.0, 0.0, 1.0);
 static Vector4 sRSpecular(1.0, 1.0, 1.0, 1.0);
@@ -59,10 +64,10 @@ SGNode *getWavyTree() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
-    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.1);
+    (*variableActions)['A'] = new DrawSegmentAction(0.1);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 3);
+    return new SGLSystem(silver, base, rules, variableActions, 25, 3);
 }
 
 SGNode *getSpikyTree() {
@@ -236,7 +241,7 @@ SGNode *getLight() {
     
     SGMatrixTransform *lightTransform 
             = new SGMatrixTransform(lightTransformMatrix);
-    lightTransform->addChild(new SGLight(1, ambient, diffuse, specular, dir, 180.0));
+    lightTransform->addChild(new SGLight(1, ambient, diffuse, specular, dir, 1800.0));
     return lightTransform;
 //    SGLight(int lightIndex, Vector4 ambient, Vector4 diffuse, 
 //        Vector4 specular, Vector3 spotDir, double spotCutoff);
@@ -335,11 +340,27 @@ SGNode *getSceneGraph() {
     Material shinyRed(ambient, diffuse, specular, shininess);
     
     SGMatrixTransform *world = new SGMatrixTransform();
+
+    world->addChild(getLight());
     world->addChild(new SGCity(shinyWhite, 100, 100));
     
     world->addChild(getParkGrid());
-    world->addChild(getLight());
+
     return world;
+}
+
+// SDMB Hash from General Hash functions library
+unsigned int SDBMHash(char* str, unsigned int len)
+{
+  unsigned int hash = 0;
+  unsigned int i    = 0;
+
+  for(i = 0; i < len; str++, i++)
+    {
+      hash = (*str) + (hash << 6) + (hash << 16) - hash;
+    }
+
+  return hash;
 }
 
 int main(int argc, char** argv) {
@@ -349,11 +370,11 @@ int main(int argc, char** argv) {
 
     int seed = time(NULL); // if no argument, random seed
     if (argc > 1)
-      seed = atoi(argv[1]); // argument, or else 0 if invalid argument
+      seed = SDBMHash(argv[1], strlen(argv[1])); 
 
     srand(seed);
     
-    setGeneratorFunctions();
+     setGeneratorFunctions();
     
     Vector3 cam(0.0, 1.0, 0.0);
     Vector3 lookAt(0.0, 1.0, -15.0);
@@ -369,4 +390,28 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
