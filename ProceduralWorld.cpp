@@ -20,6 +20,7 @@
 
 using namespace std;
 
+Material getRandomBaseMaterial();
 SGNode *getSceneGraph();
 static const double TILE_SIZE = 1.0;
 static const double TILE_HEIGHT = 0.05;
@@ -64,8 +65,8 @@ SGNode *getWavyTree() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentAction(0.1);
-    (*variableActions)['A'] = new DrawSegmentAction(0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.4);
+    (*variableActions)['A'] = new DrawSegmentAction(0.4);
     
     return new SGLSystem(silver, base, rules, variableActions, 25, 3);
 }
@@ -88,10 +89,10 @@ SGNode *getSpikyTree() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
-    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.4);
+    (*variableActions)['A'] = new DrawSegmentAction(0.4);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 3);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 25, 3);
 }
 
 SGNode *getStraightTree() {
@@ -112,10 +113,10 @@ SGNode *getStraightTree() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
-    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.4);
+    (*variableActions)['A'] = new DrawSegmentAction(0.4);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 3);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 25, 3);
 }
 
 SGNode *getWeed() {
@@ -136,10 +137,10 @@ SGNode *getWeed() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
-    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.4);
+    (*variableActions)['A'] = new DrawSegmentAction(0.4);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 3);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 25, 3);
 }
 
 SGNode *getTwistyTree() {
@@ -160,10 +161,10 @@ SGNode *getTwistyTree() {
     rules->insert(pair<char, LSystemRule*>('G', new LSystemRule(ruleG, 1.0)));
     
     (*variableActions)['F'] = new DrawSegmentAction(0.4);
-    (*variableActions)['G'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
-    (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.1);
+    (*variableActions)['G'] = new DrawSegmentAction(0.4);
+    (*variableActions)['A'] = new DrawSegmentAction(0.4);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 3);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 25, 3);
 }
 
 SGNode *getRegularLeafyTree() {
@@ -191,7 +192,7 @@ SGNode *getRegularLeafyTree() {
     (*variableActions)['L'] = new DrawSegmentMaterialAction(shinyGreen, 0.2);
     (*variableActions)['A'] = new DrawSegmentMaterialAction(shinyGreen, 0.2);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 25, 5);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 25, 5);
 }
 
 SGNode *getSpikyLeafyTree() {
@@ -222,7 +223,7 @@ SGNode *getSpikyLeafyTree() {
     (*variableActions)['A'] = new DrawSegmentAction(0.2);
     (*variableActions)['B'] = new DrawSegmentAction(0.1);
     
-    return new SGLSystem(diffuseBrown, base, rules, variableActions, 40, 6);
+    return new SGLSystem(getRandomBaseMaterial(), base, rules, variableActions, 40, 6);
 }
 
 SGNode *getLight() {
@@ -251,7 +252,7 @@ static const int GRID_ROWS = 10;
 static const int GRID_COLS = 10;
 static const double GRID_X_SIZE = 100.0;
 static const double GRID_Z_SIZE = 100.0;
-static const int NUM_GENERATORS = 7;
+static const int NUM_GENERATORS = 6;
 static const int TREES_TO_PLACE = 20;
 static const int MIN_TREE_INDEX = 2;
 static const int MAX_TREE_INDEX = 7;
@@ -275,14 +276,26 @@ int randomParkRow() {
     return randomRange(0, GRID_ROWS - 1);
 }
 
+// 0.2 chance of a returning silver
+Material getRandomBaseMaterial() {
+  int random = randomRange(1, 5);
+
+  if (random == 1) {
+    return silver;
+  } else {
+    return diffuseBrown;
+  }
+}
+
 void setGeneratorFunctions() {
     generatorFunctions[0] = &getWavyTree;
     generatorFunctions[1] = &getSpikyTree;
     generatorFunctions[2] = &getStraightTree;
-    generatorFunctions[3] = &getWeed;
-    generatorFunctions[4] = &getTwistyTree;
-    generatorFunctions[5] = &getRegularLeafyTree;
-    generatorFunctions[6] = &getSpikyLeafyTree;
+
+    generatorFunctions[3] = &getRegularLeafyTree;
+    generatorFunctions[4] = &getSpikyLeafyTree;
+    generatorFunctions[5] = &getTwistyTree;
+    //    generatorFunctions[6] = &getWeed;
 }
 
 GeneratorFunction getRandomGeneratorFunction() {
