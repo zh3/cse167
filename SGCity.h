@@ -28,6 +28,8 @@ private:
     
     SGNode *getCity();
     SGMatrixTransform *getBlock(double blockWidth);
+    SGMatrixTransform *getFountain();
+    SGNode* getWater();
 
 };
 

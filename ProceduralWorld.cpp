@@ -355,7 +355,7 @@ int main(int argc, char** argv) {
     
     setGeneratorFunctions();
     
-    Vector3 cam(0.0, 1.0, 0.0);
+    Vector3 cam(0.0, 1.0, 10.0);
     Vector3 lookAt(0.0, 1.0, -15.0);
     Vector3 up(0.0, 1.0, 0.0); 
 
