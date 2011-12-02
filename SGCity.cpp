@@ -357,11 +357,64 @@ SGNode *SGCity::getCity() {
     block = getFountain();
     city->addChild(block);
 
+    // bottom left
+    block = getBench();
+    matrix.toTranslationMatrix(-7, 0, 7);
+    matrix2.toRotationMatrixY(-45);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(2,2,2);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(block);
+    city->addChild(transform);
+
+    // bottom right 
+    block = getBench();
+    matrix.toTranslationMatrix(7, 0, 7);
+    matrix2.toRotationMatrixY(45);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(2,2,2);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(block);
+    city->addChild(transform);
+
+    // top left 
+    block = getBench();
+    matrix.toTranslationMatrix(-7, 0, -7);
+    matrix2.toRotationMatrixY(-90-45);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(2,2,2);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(block);
+    city->addChild(transform);
+
+    // top right 
+    block = getBench();
+    matrix.toTranslationMatrix(7, 0, -7);
+    matrix2.toRotationMatrixY(90+45);
+    matrix.multiply(matrix2);
+    matrix2.toScalingMatrix(2,2,2);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(block);
+    city->addChild(transform);
+
+
+
+
     return city;
 }
 
 SGMatrixTransform *SGCity::getFountain()
 {
+  Vector4 ambient(0.2, 0.2, 0.2, 1.0);
+  Vector4 diffuse(0.2, 0.2, 0.2, 1.0);
+  Vector4 specular(.2, .2, .2, 1.0);
+  double shininess = 1.0;
+  Material fountainMat(ambient, diffuse, specular, shininess); 
+
   SGCylinder *cylinder;
   Matrix4 matrix, matrix2;
   SGMatrixTransform *transform, *fountain;
@@ -369,7 +422,7 @@ SGMatrixTransform *SGCity::getFountain()
   fountain = new SGMatrixTransform(matrix);
 
   // base
-  cylinder = new SGCylinder(material, 3, 1.5);
+  cylinder = new SGCylinder(fountainMat, 3, 1.5);
   matrix.toTranslationMatrix(0,0,0);
   
   transform = new SGMatrixTransform(matrix);
@@ -377,7 +430,7 @@ SGMatrixTransform *SGCity::getFountain()
   fountain->addChild(transform);
 
   // center pole
-  cylinder = new SGCylinder(material, .2, 9);
+  cylinder = new SGCylinder(fountainMat, .2, 9);
   matrix.toTranslationMatrix(0,0,0);
   
   transform = new SGMatrixTransform(matrix);
@@ -385,7 +438,7 @@ SGMatrixTransform *SGCity::getFountain()
   fountain->addChild(transform);
 
   // middle
-  cylinder = new SGCylinder(material, 2, .5);
+  cylinder = new SGCylinder(fountainMat, 2, .5);
   matrix.toTranslationMatrix(0,2.25,0);
   
   transform = new SGMatrixTransform(matrix);
@@ -393,7 +446,7 @@ SGMatrixTransform *SGCity::getFountain()
   fountain->addChild(transform);
 
   // top
-  cylinder = new SGCylinder(material, 1, .5);
+  cylinder = new SGCylinder(fountainMat, 1, .5);
   matrix.toTranslationMatrix(0,4,0);
   
   transform = new SGMatrixTransform(matrix);
@@ -409,6 +462,63 @@ SGMatrixTransform *SGCity::getFountain()
   fountain->addChild(transform);
 
   return fountain;
+}
+
+SGMatrixTransform *SGCity::getBench()
+{
+  Vector4 ambient(0.5, 0.2, 0.1, 1.0);
+  Vector4 diffuse(0.5, 0.2, 0.1, 1.0);
+  Vector4 specular(.5, .5, .5, 1.0);
+  double shininess = 50.0;
+  Material benchMat(ambient, diffuse, specular, shininess); 
+
+  SGTexturedCuboid *cube;
+  Matrix4 matrix, matrix2;
+  SGMatrixTransform *transform, *bench;
+  matrix.toIdentity();
+  bench = new SGMatrixTransform(matrix);
+  
+  // seat
+  cube = new SGTexturedCuboid(benchMat, 1, .2, .5, textures[10]);
+  matrix.toTranslationMatrix(0, .3, -.15);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+  
+  // back
+  cube = new SGTexturedCuboid(benchMat, 1, .2, .5, textures[10]);
+  matrix.toTranslationMatrix(0, .5, 0);
+  matrix2.toRotationMatrixX(90);
+  matrix.multiply(matrix2);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+
+  // feet 
+  cube = new SGTexturedCuboid(benchMat, .1, .5, .1, textures[10]);
+  
+  matrix.toTranslationMatrix(.3, 0, -.3);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+
+  matrix.toTranslationMatrix(-.3, 0, -.3);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+
+  matrix.toTranslationMatrix(.3, 0, 0);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+
+  matrix.toTranslationMatrix(-.3, 0, 0);
+  transform = new SGMatrixTransform(matrix);
+  transform->addChild(cube);
+  bench->addChild(transform);
+
+
+  return bench;
 }
 
 SGNode *SGCity::getWater()
