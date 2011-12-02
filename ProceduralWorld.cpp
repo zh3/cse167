@@ -246,8 +246,28 @@ static const int GRID_COLS = 10;
 static const int GRID_X_SIZE = 100.0;
 static const int GRID_Z_SIZE = 100.0;
 static const int NUM_GENERATORS = 7;
+static const int TREES_TO_PLACE = 10;
+static const int MIN_TREE_INDEX = 2;
+static const int MAX_TREE_INDEX = 7;
 typedef SGNode *(*GeneratorFunction)(void);
 static GeneratorFunction generatorFunctions[NUM_GENERATORS];
+
+int randomRange(int min, int max) {
+    int range = max - min + 1;
+    return min + rand() % range;
+}
+
+int randomParkRow() {
+    while (true) {
+        int random = randomRange (0, GRID_COLS - 1);
+        
+        if (random != 2 && random != 7) return random;
+    }
+}
+
+int randomParkCol() {
+    randomRange(0, GRID_ROWS - 1);
+}
 
 void setGeneratorFunctions() {
     generatorFunctions[0] = &getWavyTree;
@@ -265,7 +285,7 @@ SGNode *getParkGrid() {
     //grid->addChild(generatorFunctions[6](), 4, 4);
     
     for (int i = 0; i < NUM_GENERATORS; i++) {
-        grid->addChild(generatorFunctions[i](), i, i);
+        grid->addChild(generatorFunctions[i](), randomParkRow(), randomParkCol());
     }
     
     for (int i = 0 ; i < GRID_ROWS; i++) {
