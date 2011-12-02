@@ -16,6 +16,7 @@
 #include "DrawSegmentAction.h"
 #include "DrawSegmentMaterialAction.h"
 #include "SGLight.h"
+#include "SGTexturedPlane.h"
 
 using namespace std;
 
@@ -338,7 +339,6 @@ SGNode *getSceneGraph() {
     
     world->addChild(getParkGrid());
     world->addChild(getLight());
-    
     return world;
 }
 

@@ -94,7 +94,8 @@ void SGTexturedPlane::generateVertices() {
         textureCoordinate = textureCoordinates[i];
         
         textureCoordinate->x = (textureCoordinate->x / xSize) * resolution;
-        textureCoordinate->y = (textureCoordinate->y / ySize) * resolution;
+        textureCoordinate->y = (textureCoordinate->y / xSize) * resolution;
+	//	cout << "Texture coordinate is: " << *textureCoordinates[i] << endl;
     }
 }
 
