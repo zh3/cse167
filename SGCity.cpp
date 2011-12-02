@@ -18,6 +18,7 @@
 #include <math.h>
 #include "Texture.h"
 #include "SGTexturedPlane.h"
+#include "SGTexturedCuboid.h"
 using namespace std;
 
 SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeode(material) {
@@ -185,7 +186,6 @@ SGNode *SGCity::getCity() {
     transform->addChild(plane);
     city->addChild(transform);
 
-
     Vector4 skyboxambient(1.0, 1.0, 1.0, 1.0);
     Vector4 skyboxdiffuse(0.0, 0.0, 0.0, 1.0);
     Vector4 skyboxspecular(0.0, 0.0, 0.0, 1.0);
@@ -301,7 +301,57 @@ SGNode *SGCity::getCity() {
     transform->addChild(plane);
     city->addChild(transform);
 
-    city->addChild(block);
+    // front wall 
+    SGTexturedCuboid *wall;
+    texture = new Texture("./textures/wall4.ppm");
+    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+
+    matrix.toTranslationMatrix(0, 0, -55);
+    //matrix.multiply(matrix2);
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // back wall 
+    texture = new Texture("./textures/wall4.ppm");
+    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+
+    matrix.toTranslationMatrix(0, 0, 55);
+    //matrix.multiply(matrix2);
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // right wall 
+    texture = new Texture("./textures/wall4.ppm");
+    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+
+    matrix2.toRotationMatrixY(90);
+    matrix.toTranslationMatrix(55, 0, 0);
+    matrix.multiply(matrix2);
+
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // left wall 
+    texture = new Texture("./textures/wall4.ppm");
+    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+
+    matrix2.toRotationMatrixY(90);
+    matrix.toTranslationMatrix(-55, 0, 0);
+    matrix.multiply(matrix2);
+
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+
+
 
 
     return city;
