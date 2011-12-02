@@ -305,5 +305,6 @@ void GlutWindow::setCamera(const Vector3 &cameraLoc, const Vector3 &lookAt,
 }
 
 void GlutWindow::rebuildSceneGraph() {
+    delete root;
     root = sgFunction();
 }
