@@ -83,13 +83,13 @@ SGNode *SGCity::getCity() {
     city->addChild(block);
 
 
-    blockTranslateMatrix.toTranslationMatrix(-25, 0, -25);
+    blockTranslateMatrix.toTranslationMatrix(-25, 0, -24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    blockTranslateMatrix.toTranslationMatrix(-25, 0, 25);
+    blockTranslateMatrix.toTranslationMatrix(-25, 0, 24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
@@ -97,13 +97,13 @@ SGNode *SGCity::getCity() {
 
 
     blockTransform.toRotationMatrixY(-90);
-    blockTranslateMatrix.toTranslationMatrix(-28, 0, -25);
+    blockTranslateMatrix.toTranslationMatrix(-28, 0, -24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    blockTranslateMatrix.toTranslationMatrix(-28, 0, 25);
+    blockTranslateMatrix.toTranslationMatrix(-28, 0, 24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
@@ -141,26 +141,26 @@ SGNode *SGCity::getCity() {
     city->addChild(block);
 
 
-    blockTranslateMatrix.toTranslationMatrix(25, 0, -25);
+    blockTranslateMatrix.toTranslationMatrix(25, 0, -24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    blockTranslateMatrix.toTranslationMatrix(25, 0, 25);
+    blockTranslateMatrix.toTranslationMatrix(25, 0, 24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
     blockTransform.toRotationMatrixY(-270);
-    blockTranslateMatrix.toTranslationMatrix(28, 0, -25);
+    blockTranslateMatrix.toTranslationMatrix(28, 0, -24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
     city->addChild(block);
 
-    blockTranslateMatrix.toTranslationMatrix(28, 0, 25);
+    blockTranslateMatrix.toTranslationMatrix(28, 0, 24);
     block = getBlock(45);
     blockTranslateMatrix.multiply(blockTransform);
     block->setTransformationMatrix(blockTranslateMatrix);
@@ -311,7 +311,7 @@ SGNode *SGCity::getCity() {
     // front wall 
     SGTexturedCuboid *wall;
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
 
     matrix.toTranslationMatrix(0, 0, -55);
     //matrix.multiply(matrix2);
@@ -322,7 +322,7 @@ SGNode *SGCity::getCity() {
 
     // back wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
 
     matrix.toTranslationMatrix(0, 0, 55);
     //matrix.multiply(matrix2);
@@ -333,7 +333,7 @@ SGNode *SGCity::getCity() {
 
     // right wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
 
     matrix2.toRotationMatrixY(90);
     matrix.toTranslationMatrix(55, 0, 0);
@@ -346,7 +346,7 @@ SGNode *SGCity::getCity() {
 
     // left wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 100, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
 
     matrix2.toRotationMatrixY(90);
     matrix.toTranslationMatrix(-55, 0, 0);
@@ -404,7 +404,73 @@ SGNode *SGCity::getCity() {
     transform->addChild(block);
     city->addChild(transform);
 
+    // paths
+    texture = new Texture("./textures/brick3.ppm");
+    wall = new SGTexturedCuboid(skyboxmaterial, 2.5, .5, 105, texture);
 
+    matrix.toTranslationMatrix(0, -.2, 0);
+    matrix2.toRotationMatrixY(90);
+    matrix.multiply(matrix2);
+
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+//    wall = new SGTexturedCuboid(skyboxmaterial, 1, .5, 90, texture);
+    
+    // left center vertical
+    matrix.toTranslationMatrix(-23, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // lefter vertical
+    matrix.toTranslationMatrix(-29.5, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // leftest vertical
+    matrix.toTranslationMatrix(-48, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // right center vertical
+    matrix.toTranslationMatrix(23, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // righter vertical
+    matrix.toTranslationMatrix(29.5, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // rightest vertical
+    matrix.toTranslationMatrix(48, -.2, 0);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+
+
+    // top horizontal
+    matrix.toTranslationMatrix(0, -.2, -48);
+    matrix2.toRotationMatrixY(90);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
+
+    // bottom horizontal
+    matrix.toTranslationMatrix(0, -.2, 48);
+    matrix2.toRotationMatrixY(90);
+    matrix.multiply(matrix2);
+    transform = new SGMatrixTransform(matrix);
+    transform->addChild(wall);
+    city->addChild(transform);
 
 
     return city;
