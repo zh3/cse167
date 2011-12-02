@@ -466,27 +466,27 @@ SGMatrixTransform *SGCity::getFountain()
 
 SGMatrixTransform *SGCity::getBench()
 {
-  Vector4 ambient(0.5, 0.2, 0.1, 1.0);
-  Vector4 diffuse(0.5, 0.2, 0.1, 1.0);
-  Vector4 specular(.5, .5, .5, 1.0);
+  Vector4 ambient(0.4, 0.2, 0.1, 1.0);
+  Vector4 diffuse(0.4, 0.2, 0.1, 1.0);
+  Vector4 specular(.4, .2, .2, 1.0);
   double shininess = 50.0;
   Material benchMat(ambient, diffuse, specular, shininess); 
 
-  SGTexturedCuboid *cube;
+  SGCuboid *cube;
   Matrix4 matrix, matrix2;
   SGMatrixTransform *transform, *bench;
   matrix.toIdentity();
   bench = new SGMatrixTransform(matrix);
   
   // seat
-  cube = new SGTexturedCuboid(benchMat, 1, .2, .5, textures[10]);
+  cube = new SGCuboid(benchMat, 1, .2, .5);//, textures[10]);
   matrix.toTranslationMatrix(0, .3, -.15);
   transform = new SGMatrixTransform(matrix);
   transform->addChild(cube);
   bench->addChild(transform);
   
   // back
-  cube = new SGTexturedCuboid(benchMat, 1, .2, .5, textures[10]);
+  cube = new SGCuboid(benchMat, 1, .2, .5);//, textures[10]);
   matrix.toTranslationMatrix(0, .5, 0);
   matrix2.toRotationMatrixX(90);
   matrix.multiply(matrix2);
@@ -495,7 +495,7 @@ SGMatrixTransform *SGCity::getBench()
   bench->addChild(transform);
 
   // feet 
-  cube = new SGTexturedCuboid(benchMat, .1, .5, .1, textures[10]);
+  cube = new SGCuboid(benchMat, .1, .5, .1);//, textures[10]);
   
   matrix.toTranslationMatrix(.3, 0, -.3);
   transform = new SGMatrixTransform(matrix);
@@ -517,7 +517,7 @@ SGMatrixTransform *SGCity::getBench()
   transform->addChild(cube);
   bench->addChild(transform);
 
-  //return new SGMatrixTransform();
+//  return new SGMatrixTransform();
   return bench;
 }
 

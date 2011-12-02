@@ -355,9 +355,10 @@ SGNode *getSceneGraph() {
     SGMatrixTransform *world = new SGMatrixTransform();
 
     world->addChild(getLight());
+
+    world->addChild(getParkGrid());
     world->addChild(new SGCity(shinyWhite, 100, 100));
     
-    world->addChild(getParkGrid());
 
     return world;
 }
