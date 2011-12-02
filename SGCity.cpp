@@ -466,8 +466,8 @@ SGMatrixTransform *SGCity::getFountain()
 
 SGMatrixTransform *SGCity::getBench()
 {
-  Vector4 ambient(0.5, 0.5, 0.5, 1.0);
-  Vector4 diffuse(0.5, 0.5, 0.5, 1.0);
+  Vector4 ambient(0.5, 0.2, 0.1, 1.0);
+  Vector4 diffuse(0.5, 0.2, 0.1, 1.0);
   Vector4 specular(.5, .5, .5, 1.0);
   double shininess = 50.0;
   Material benchMat(ambient, diffuse, specular, shininess); 
@@ -517,7 +517,7 @@ SGMatrixTransform *SGCity::getBench()
   transform->addChild(cube);
   bench->addChild(transform);
 
-
+  //return new SGMatrixTransform();
   return bench;
 }
 
