@@ -88,7 +88,7 @@ void GlutWindow::displayCallback(void) {
             += (double) (currentTime.tv_usec - startTime.tv_usec) / 1000000.0;
         frameRate = FRAMERATE_MEASURE_INTERVAL / secsPassed;
         
-//        cout << frameRate << " fps" << endl;
+        cout << frameRate << " fps" << endl;
         
         framesDrawn = 0;
         gettimeofday(&startTime, 0);
@@ -164,7 +164,7 @@ void GlutWindow::keyboardMovement()
     ypos -= float(sin(xrotrad)) ;
   }
   if (aPressed)
-  { yrot -= 1;
+  { yrot -= 3;
     if (yrot < -360)yrot += 360;
   }
   if (sPressed)
@@ -179,19 +179,19 @@ void GlutWindow::keyboardMovement()
   }
   if (dPressed)
   {
-    yrot += 1;
+    yrot += 3;
     if (yrot >360) yrot -= 360;
   }
   
   if (zPressed) {
     if (!(xrot > 180))
-      xrot += 1;
+      xrot += 3;
     if (xrot >360) xrot -= 360;
   }
   
   if (qPressed) {
     if (!(xrot < 0))
-      xrot -= 1;
+      xrot -= 3;
     if (xrot < -360) xrot += 360;
   }
   

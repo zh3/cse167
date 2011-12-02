@@ -243,10 +243,10 @@ SGNode *getLight() {
 
 static const int GRID_ROWS = 10;
 static const int GRID_COLS = 10;
-static const int GRID_X_SIZE = 100.0;
-static const int GRID_Z_SIZE = 100.0;
+static const double GRID_X_SIZE = 100.0;
+static const double GRID_Z_SIZE = 100.0;
 static const int NUM_GENERATORS = 7;
-static const int TREES_TO_PLACE = 10;
+static const int TREES_TO_PLACE = 20;
 static const int MIN_TREE_INDEX = 2;
 static const int MAX_TREE_INDEX = 7;
 typedef SGNode *(*GeneratorFunction)(void);
@@ -257,7 +257,7 @@ int randomRange(int min, int max) {
     return min + rand() % range;
 }
 
-int randomParkRow() {
+int randomParkCol() {
     while (true) {
         int random = randomRange (0, GRID_COLS - 1);
         
@@ -265,8 +265,8 @@ int randomParkRow() {
     }
 }
 
-int randomParkCol() {
-    randomRange(0, GRID_ROWS - 1);
+int randomParkRow() {
+    return randomRange(0, GRID_ROWS - 1);
 }
 
 void setGeneratorFunctions() {
@@ -279,15 +279,27 @@ void setGeneratorFunctions() {
     generatorFunctions[6] = &getSpikyLeafyTree;
 }
 
+GeneratorFunction getRandomGeneratorFunction() {
+  return generatorFunctions[randomRange(0, NUM_GENERATORS - 1)];
+}
+
 SGNode *getParkGrid() {
     SGGrid *grid = new SGGrid(GRID_ROWS, GRID_COLS, GRID_X_SIZE, GRID_Z_SIZE);
     
     //grid->addChild(generatorFunctions[6](), 4, 4);
-    
-    for (int i = 0; i < NUM_GENERATORS; i++) {
-        grid->addChild(generatorFunctions[i](), randomParkRow(), randomParkCol());
+
+    for (int i = 0; i < TREES_TO_PLACE; i++) {
+        int randomRow = randomParkRow();
+        int randomCol = randomParkCol();
+	
+	while (grid->isOccupied(randomRow, randomCol)) {
+	    randomRow = randomParkRow();
+	    randomCol = randomParkCol();
+	}
+
+	grid->addChild((getRandomGeneratorFunction())(), randomRow, randomCol);
     }
-    
+    /*    
     for (int i = 0 ; i < GRID_ROWS; i++) {
         for (int j = 0; j < GRID_COLS; j++) {
             if (!grid->isOccupied(i, j)) {
@@ -295,6 +307,7 @@ SGNode *getParkGrid() {
             }
         }
     }
+    */
     return grid;
 }
 
@@ -342,7 +355,7 @@ int main(int argc, char** argv) {
     
     setGeneratorFunctions();
     
-    Vector3 cam(0.0, 1.0, 15.0);
+    Vector3 cam(0.0, 1.0, 0.0);
     Vector3 lookAt(0.0, 1.0, -15.0);
     Vector3 up(0.0, 1.0, 0.0); 
 
