@@ -172,9 +172,16 @@ void SGHouse::addWindows(SGMatrixTransform *house, double width, double stories,
     int wid = (int)width;
     doorPosition = rand() % wid;
 
-    int doorTex = 10;//rand() % 2 + 10; // door textures are 10,11
+    int doorTex = rand() % 3; // door textures are 7,8.10
+    if (doorTex == 0)
+      doorTex += 7;
+    else if (doorTex == 1)
+      doorTex += 7;
+    else
+      doorTex += 8; 
+
     int windowTex = 11;
-    int beamTex = rand() % 2;
+//    int beamTex = rand() % 2;
 
     // create windows, top to bottom, left to right
     for (int i = stories; i > 0; --i)
@@ -331,8 +338,8 @@ void SGHouse::addRoof(SGMatrixTransform *house, double width, double stories, Te
 
     if (width > 2 && angle > 20)
       angle -= 10;
-    if (width == 2 && angle < 25)
-      angle += 10;
+    if (width < 3 && angle < 25)
+      angle += 20;
 
     angle = angle*2*acos(0)/180;
     roofHeight = 2*tan(angle)/width;
@@ -493,8 +500,8 @@ void SGHouse::addChimney(SGMatrixTransform *house, double width, double stories,
 
     double chimneyHeight = stories + (double)(rand()%10)/10;
     if (chimneyHeight - stories < .2)
-      chimneyHeight += .4;
-    if (chimneyHeight - stories > .9)
+      chimneyHeight += .3;
+    if (chimneyHeight - stories > .7)
       chimneyHeight -= .3;
 
     SGTexturedCuboid *chimney= new SGTexturedCuboid(material, chimneyWidth, chimneyHeight,

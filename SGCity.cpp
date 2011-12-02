@@ -28,6 +28,9 @@ using namespace std;
 SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeode(material) {
   seed = newSeed;
   
+  // door = 7,8,10
+  // window = 11
+  // chimney = 1
   textures[0] = new Texture("./textures/wall1.ppm");
   textures[1] = new Texture("./textures/brick1.ppm");
   textures[2] = new Texture("./textures/wall3.ppm");
@@ -35,7 +38,7 @@ SGCity::SGCity(Material& material, double newSeed, double newBlockWidth) : SGGeo
 
   textures[4] = new Texture("./textures/roof1.ppm");
   textures[5] = new Texture("./textures/roof2.ppm");
-  textures[6] = new Texture("./textures/brick2.ppm");
+  textures[6] = new Texture("./textures/brick3.ppm");
   textures[7] = new Texture("./textures/roof4.ppm");
 
   textures[8] = new Texture("./textures/beam.ppm");
