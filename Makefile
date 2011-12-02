@@ -7,7 +7,7 @@ ECHO	= @echo
 CC	= @g++
 LIBS	= -lglut -lGLU -lGL -lXmu -lXi -o $(NAME)
 LDFLAGS	= $(LIBS)
-CFLAGS	= -Wall
+CFLAGS	= -O3 -Wall
 SOURCES = $(wildcard *.cpp)
 OBJS = $(patsubst %.cpp, %.o, $(SOURCES))
 
