@@ -30,6 +30,7 @@ private:
     SGMatrixTransform *getBlock(double blockWidth);
     SGMatrixTransform *getFountain();
     SGNode* getWater();
+    SGMatrixTransform* getBench();
 
 };
 
