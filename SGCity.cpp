@@ -380,7 +380,7 @@ SGNode *SGCity::getCity() {
 
     // front wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 109, 7, 1, texture);
 
     matrix.toTranslationMatrix(0, 0, -55);
     //matrix.multiply(matrix2);
@@ -391,7 +391,7 @@ SGNode *SGCity::getCity() {
 
     // back wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 109, 7, 1, texture);
 
     matrix.toTranslationMatrix(0, 0, 55);
     //matrix.multiply(matrix2);
@@ -402,7 +402,7 @@ SGNode *SGCity::getCity() {
 
     // right wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 109, 7, 1, texture);
 
     matrix2.toRotationMatrixY(90);
     matrix.toTranslationMatrix(55, 0, 0);
@@ -415,7 +415,7 @@ SGNode *SGCity::getCity() {
 
     // left wall 
     texture = new Texture("./textures/wall4.ppm");
-    wall = new SGTexturedCuboid(skyboxmaterial, 105, 7, 1, texture);
+    wall = new SGTexturedCuboid(skyboxmaterial, 109, 7, 1, texture);
 
     matrix2.toRotationMatrixY(90);
     matrix.toTranslationMatrix(-55, 0, 0);
